@@ -475,12 +475,9 @@ namespace ImGui
 							ImGui::InputIntNL("  Points  ", &FeatureSettings::iP1PointsValue, &FeatureSettings::bP1DynamicPoints, 100, TRUE, FALSE);
 							ImGui::ToggleNL("", &FeatureSettings::bP1InfinitePoints, TRUE);
 							ImGui::InputIntNL("  Weapon Cycle", &FeatureSettings::iP1WCValue, &FeatureSettings::bP1WCycle, 80, FALSE, TRUE);
-							ImGui::Unindent(12);
-							ImGui::Separator();
-							ImGui::NewLine();
-							ImGui::Indent(12);
 							ImGui::InputIntNL("  Jumpheight", &FeatureSettings::iJumpHeightValue, &FeatureSettings::bP1JumpHeight, 100, FALSE, TRUE);
-							ImGui::ToggleNL("  Teleport Zombie", &FeatureSettings::bZombieTP, FALSE);
+							ImGui::ToggleNL("  Teleport Zombie", &FeatureSettings::bZombieTP, TRUE);
+							ImGui::ToggleNL("  Zombie InstaKill", &FeatureSettings::bP1AlwaysInstaKill, FALSE);
 							ImGui::Unindent(12);
 						} ImGui::PopStyleColor(); ImGui::PopStyleVar(); ImGui::EndChild();
 

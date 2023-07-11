@@ -31,7 +31,7 @@ Call of Duty: Black Ops 3 Zombie Tool
 
 ## Tool Preview
 ![BO3Z_Tool1](https://cdn.discordapp.com/attachments/952164775771652106/1128441015896915998/image.png)
-![BO3Z_Tool2](https://cdn.discordapp.com/attachments/952164775771652106/1128441076760461332/image.png)
+![BO3Z_Tool2](https://cdn.discordapp.com/attachments/952164775771652106/1128448776051359744/image.png)
 
 ## InGame Preview
 ![BO3Z_Tool3](https://cdn.discordapp.com/attachments/952344650306445352/1128350303478104194/image.png)

@@ -479,7 +479,7 @@ namespace Engine
 				{
 					Utils::Read((BYTE*)entity.playerPedHealthAddr + (entity.zombieArraySize * i), (BYTE*)&entity.iZombieCurrentHealthValue, sizeof(entity.iZombieCurrentHealthValue), Game::hProc);
 					Utils::Read((BYTE*)entity.playerPedHealthMaxAddr + (entity.zombieArraySize * i), (BYTE*)&entity.iZombieMaxHealthValue, sizeof(entity.iZombieMaxHealthValue), Game::hProc);
-					if (entity.iZombieCurrentHealthValue < 1)
+					if (entity.iZombieCurrentHealthValue < 1 || entity.iZombieCurrentHealthValue == 0)
 						continue;
 					Utils::Read((BYTE*)entity.playerCoordAddr, (BYTE*)&entity.currentPlayerCoords, sizeof(entity.currentPlayerCoords), Game::hProc);
 					Utils::Read((BYTE*)entity.zombiesCoordAddr + (entity.zombieArraySize * i), (BYTE*)&entity.currentZombieCoords, sizeof(entity.currentZombieCoords), Game::hProc);

@@ -105,10 +105,8 @@ void Entity_t::EnableInstaKill()
 	for (uintptr_t i = 0; i < 80; i++)
 	{
 		Utils::Read((BYTE*)playerPedHealthAddr + (zombieArraySize * i), (BYTE*)&iZombieCurrentHealthValue, sizeof(iZombieCurrentHealthValue), Game::hProc);
-
 		if (iZombieCurrentHealthValue < 1)
 			continue;
-
 		Utils::Write((BYTE*)playerPedHealthAddr + (zombieArraySize * i), (BYTE*)&iZombieNewHealthValue, sizeof(iZombieNewHealthValue), Game::hProc);
 	}
 }
