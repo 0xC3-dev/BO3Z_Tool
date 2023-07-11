@@ -30,7 +30,7 @@ namespace Startup
 	// Get Pid and Module Base.
 	void GetGameInfo()
 	{
-		Game::procID = Utils::GetProcId("BlackOps3.exe"); // BlackOps3 // Spotify
+		Game::procID = Utils::GetProcId("BlackOps3.exe");
 		Game::hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, Game::procID);
 		if (Game::procID < 1)
 		{

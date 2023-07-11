@@ -555,8 +555,10 @@ namespace ImGui
 					{
 						ImGui::SCPY(10);
 						ImGui::CenterText("Config System", 10, TRUE, TRUE);
-						ImGui::SCPY(225);
-						ImGui::CenterText("COMING SOON!", 10, TRUE, TRUE);
+						ImGui::SCPY(ImGui::GetY() / 2 - 50);
+						ImGui::CenterText("COMING SOON!", 0, FALSE, FALSE);
+						ImGui::SCPY(ImGui::GetY() / 2 + 50);
+						ImGui::CenterText("PLEASE BE PATIENT", 0, FALSE, FALSE);
 					} ImGui::PopStyleColor(); ImGui::PopStyleVar(); ImGui::EndChild();
 				}
 			} ImGui::PopStyleColor(); ImGui::EndChild();

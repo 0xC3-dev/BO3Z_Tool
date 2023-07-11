@@ -180,6 +180,9 @@
     <ClInclude Include="Utils\Utils.h" />
     <ClInclude Include="Variables\Varibales.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
