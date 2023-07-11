@@ -29,9 +29,12 @@ Call of Duty: Black Ops 3 Zombie Tool
 * INSERT KEY = Show/Hide Tool
 * HOME KEY = Close Tool
 
-## Preview
+## Tool Preview
 ![BO3Z_Tool1](https://cdn.discordapp.com/attachments/952164775771652106/1128441015896915998/image.png)
 ![BO3Z_Tool2](https://cdn.discordapp.com/attachments/952164775771652106/1128441076760461332/image.png)
+
+## InGame Preview
+![BO3Z_Tool3](https://cdn.discordapp.com/attachments/952344650306445352/1128350303478104194/image.png)
 
 ## NOTE
 * This tool will have bugs present. I have yet to go through and really cleanup alot but will be doing so little by little. If you wish to improve upon the codebase, feel free to make pull requests. Any contribution is welcome!
