@@ -34,4 +34,4 @@ Call of Duty: Black Ops 3 Zombie Tool
 ![BO3Z_Tool2](https://cdn.discordapp.com/attachments/952164775771652106/1128441076760461332/image.png)
 
 ## NOTE
-* External tool base for Call of Duty: Black Ops 3 Zombies written in C++ utilizing DirectX 11 and the ImGui Framework.
+* This tool will have bugs present. I have yet to go through and really cleanup alot but will be doing so little by little. If you wish to improve upon the codebase, feel free to make pull requests. Any contribution is welcome!
