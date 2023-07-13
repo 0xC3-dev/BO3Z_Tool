@@ -9,6 +9,7 @@ namespace UI
 	int iGuiY = 0;
 	int iTab = 0;
 	int iExploitPage = 1;
+	int iPlayer1ExploitPage = 1;
 }
 
 namespace Game
@@ -47,7 +48,7 @@ namespace FeatureSettings
 	bool bTPAllZombies = false;
 	bool bNewZombieLocation = false;
 	bool bP1WCycle = false;
-	bool bP1WCycleKey = true;
+	bool bP1WCycleKey = false;
 	bool bP1Name = false;
 #pragma endregion	
 #pragma region Player 2 Bools
@@ -104,7 +105,7 @@ namespace AimSettings
 {
 	float fFovLimit = 0;
 	float fAimSmooth = 1.f;
-	int iAimKey = 0x5;
+	int iAimKey = 0x0;
 }
 
 namespace MiscSettings

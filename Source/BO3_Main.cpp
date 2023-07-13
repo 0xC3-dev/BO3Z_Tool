@@ -11,14 +11,15 @@
 * 
 *	Update : 07/11/23 | Updated Codebase. Cleaned up Player and Zombie Coordinate Reads/Writes.
 * 
+*	Update : 07/13/23 | Added button toggle for weapon cycle. Also added combo box (aka dropdown menu) for selecting weapon cycle hotkey. Also added Zombie Counter toggle to Player 1 Exploits.
+* 
 * 
 *	TODO:
 * 
-*	Finish refining aimbot. Add true bone aim to make aimbot much better than roughly aiming at z head.
-* 
-*	Implement button toggle for key cycling weapons (currently hard coded to true).
-* 
-*	Add Zombie Counter Button Toggle in GUI. 
+*	Aimbot: Refine Aimbot and add Skeleton/Bone Selection.
+*	ESP: Add Skeleton ESP.
+*	Exploits: Fix JetPack feature. Fix No Spread.
+*	Config System: Add Config System to Load/Save feature states.
 */
 
 #include "BO3_Main.h"

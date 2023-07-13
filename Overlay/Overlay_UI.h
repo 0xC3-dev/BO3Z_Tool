@@ -213,6 +213,123 @@ namespace ImGui
 		}
 	}
 
+	void WeaponCycleComboBox(const char* featureName, BOOL newLine)
+	{
+		const char* cWeaponCycleKeySelection[] = { (" LMB"), (" RMB"), (" MMB"), (" X1MB"), (" X2MB"), (" TAB"), (" LSHIFT"), (" LCTRL"), (" LALT"), (" CAPS"), (" SPACE"),
+			(" '0'"), (" '1'"), (" '2'"), (" '3'"), (" 'C'"), (" 'E'"), (" 'F'"), (" 'Q'"), (" 'V'"), (" 'X'"), (" 'Z'"), (" LWIN") };
+		static const char* currentItem = (" Select Key");
+		if (ImGui::BeginCombo(featureName, currentItem, ImGuiComboFlags_NoArrowButton))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(cWeaponCycleKeySelection); n++)
+			{
+				bool bSelected = (currentItem == cWeaponCycleKeySelection[n]);
+				if (ImGui::Selectable(cWeaponCycleKeySelection[n], bSelected))
+					currentItem = cWeaponCycleKeySelection[n];
+				if (ImGui::IsItemClicked(bSelected))
+				{
+					ImGui::SetItemDefaultFocus();
+					if (n == 0)
+					{
+						AimSettings::iAimKey = 0x01;
+					}
+					if (n == 1)
+					{
+						AimSettings::iAimKey = 0x02;
+					}
+					if (n == 2)
+					{
+						AimSettings::iAimKey = 0x04;
+					}
+					if (n == 3)
+					{
+						AimSettings::iAimKey = 0x05;
+					}
+					if (n == 4)
+					{
+						AimSettings::iAimKey = 0x06;
+					}
+					if (n == 5)
+					{
+						AimSettings::iAimKey = 0x09;
+					}
+					if (n == 6)
+					{
+						AimSettings::iAimKey = 0x10;
+					}
+					if (n == 7)
+					{
+						AimSettings::iAimKey = 0x11;
+					}
+					if (n == 8)
+					{
+						AimSettings::iAimKey = 0x12;
+					}
+					if (n == 9)
+					{
+						AimSettings::iAimKey = 0x14;
+					}
+					if (n == 10)
+					{
+						AimSettings::iAimKey = 0x20;
+					}
+					if (n == 11)
+					{
+						AimSettings::iAimKey = 0x30;
+					}
+					if (n == 12)
+					{
+						AimSettings::iAimKey = 0x31;
+					}
+					if (n == 13)
+					{
+						AimSettings::iAimKey = 0x32;
+					}
+					if (n == 14)
+					{
+						AimSettings::iAimKey = 0x33;
+					}
+					if (n == 15)
+					{
+						AimSettings::iAimKey = 0x43;
+					}
+					if (n == 16)
+					{
+						AimSettings::iAimKey = 0x45;
+					}
+					if (n == 17)
+					{
+						AimSettings::iAimKey = 0x46;
+					}
+					if (n == 18)
+					{
+						AimSettings::iAimKey = 0x51;
+					}
+					if (n == 19)
+					{
+						AimSettings::iAimKey = 0x56;
+					}
+					if (n == 20)
+					{
+						AimSettings::iAimKey = 0x58;
+					}
+					if (n == 21)
+					{
+						AimSettings::iAimKey = 0x5A;
+					}
+					if (n == 22)
+					{
+						AimSettings::iAimKey = 0x5B;
+					}
+				}
+			}
+			ImGui::EndCombo();
+		}
+		if (newLine)
+		{
+			ImGui::NewLine();
+		}
+	}
+
 	void ToggleNL(const char* toggleName, bool* featureBool, BOOL newLine)
 	{
 		ImVec2 p = ImGui::GetCursorScreenPos();
@@ -458,28 +575,51 @@ namespace ImGui
 				{
 					if (UI::iExploitPage == 1)
 					{
-						// Player 1 Feature Window.
-						ImGui::SCP(10, 10);
-						ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(LightGrey26));
-						ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10);
-						if (ImGui::BeginChild("Player1FeatureWindow", ImVec2(ImGui::GetX() / 2 - 10, ImGui::GetY() - 10), false, windowFlags))
+						if (UI::iPlayer1ExploitPage == 1)
 						{
-							ImGui::SCPY(10);
-							ImGui::CenterText("Player 1 ( HOST )", 10, TRUE, TRUE);
-							ImGui::Indent(12);
-							ImGui::ToggleNL("  Godmode", &FeatureSettings::bP1InfiniteHealth, TRUE);
-							ImGui::ToggleNL("  Unlimited Clip", &FeatureSettings::bP1InfiniteClipAmmo, TRUE);
-							ImGui::ToggleNL("  Unlimited Stock", &FeatureSettings::bP1InfiniteStockAmmo, TRUE);
-							ImGui::ToggleNL("  Rapid Fire", &FeatureSettings::bP1RapidFire, TRUE);
-							ImGui::ToggleNL("  No Recoil", &FeatureSettings::bNoRecoilOn, TRUE);
-							ImGui::InputIntNL("  Points  ", &FeatureSettings::iP1PointsValue, &FeatureSettings::bP1DynamicPoints, 100, TRUE, FALSE);
-							ImGui::ToggleNL("", &FeatureSettings::bP1InfinitePoints, TRUE);
-							ImGui::InputIntNL("  Weapon Cycle", &FeatureSettings::iP1WCValue, &FeatureSettings::bP1WCycle, 80, FALSE, TRUE);
-							ImGui::InputIntNL("  Jumpheight", &FeatureSettings::iJumpHeightValue, &FeatureSettings::bP1JumpHeight, 100, FALSE, TRUE);
-							ImGui::ToggleNL("  Teleport Zombie", &FeatureSettings::bZombieTP, TRUE);
-							ImGui::ToggleNL("  Zombie InstaKill", &FeatureSettings::bP1AlwaysInstaKill, FALSE);
-							ImGui::Unindent(12);
-						} ImGui::PopStyleColor(); ImGui::PopStyleVar(); ImGui::EndChild();
+							// Player 1 Feature Window.
+							ImGui::SCP(10, 10);
+							ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(LightGrey26));
+							ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10);
+							if (ImGui::BeginChild("Player1FeatureWindow", ImVec2(ImGui::GetX() / 2 - 10, ImGui::GetY() - 10), false, windowFlags))
+							{
+								ImGui::SCPY(10);
+								ImGui::CenterText("Player 1 ( HOST )", 10, TRUE, TRUE);
+								ImGui::Indent(12);
+								ImGui::ToggleNL("  Godmode", &FeatureSettings::bP1InfiniteHealth, TRUE);
+								ImGui::ToggleNL("  Unlimited Clip", &FeatureSettings::bP1InfiniteClipAmmo, TRUE);
+								ImGui::ToggleNL("  Unlimited Stock", &FeatureSettings::bP1InfiniteStockAmmo, TRUE);
+								ImGui::ToggleNL("  Rapid Fire", &FeatureSettings::bP1RapidFire, TRUE);
+								ImGui::ToggleNL("  No Recoil", &FeatureSettings::bNoRecoilOn, TRUE);
+								ImGui::InputIntNL("  Points  ", &FeatureSettings::iP1PointsValue, &FeatureSettings::bP1DynamicPoints, 100, TRUE, FALSE);
+								ImGui::ToggleNL("", &FeatureSettings::bP1InfinitePoints, TRUE);
+								ImGui::InputIntNL("  Weapon Cycle", &FeatureSettings::iP1WCValue, &FeatureSettings::bP1WCycle, 80, FALSE, TRUE);
+								ImGui::ToggleNL("  Weapon Cycle HotKey", &FeatureSettings::bP1WCycleKey, TRUE);
+								ImGui::WeaponCycleComboBox("  WC HotKey", FALSE);
+								ImGui::Unindent(12);
+								ImGui::ButtonWindowSCP(">", &UI::iPlayer1ExploitPage, 2, ImVec2(152, 390), ImVec2(50, 20), FALSE);
+							} ImGui::PopStyleColor(); ImGui::PopStyleVar(); ImGui::EndChild();
+						}
+						
+						if (UI::iPlayer1ExploitPage == 2)
+						{
+							// Player 1 Feature Window Extended.
+							ImGui::SCP(10, 10);
+							ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(LightGrey26));
+							ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10);
+							if (ImGui::BeginChild("Player1FeatureWindowExtended", ImVec2(ImGui::GetX() / 2 - 10, ImGui::GetY() - 10), false, windowFlags))
+							{
+								ImGui::SCPY(10);
+								ImGui::CenterText("Player 1 ( HOST )", 10, TRUE, TRUE);
+								ImGui::Indent(12);
+								ImGui::ToggleNL("  Zombie Counter", &FeatureSettings::bZombieCount, TRUE);
+								ImGui::InputIntNL("  Jumpheight", &FeatureSettings::iJumpHeightValue, &FeatureSettings::bP1JumpHeight, 100, FALSE, TRUE);
+								ImGui::ToggleNL("  Teleport Zombie", &FeatureSettings::bZombieTP, TRUE);
+								ImGui::ToggleNL("  Zombie InstaKill", &FeatureSettings::bP1AlwaysInstaKill, FALSE);
+								ImGui::Unindent(12);
+								ImGui::ButtonWindowSCP("<", &UI::iPlayer1ExploitPage, 1, ImVec2(152, 390), ImVec2(50, 20), FALSE);
+							} ImGui::PopStyleColor(); ImGui::PopStyleVar(); ImGui::EndChild();
+						}
 
 						// Player 2 Feature Window.
 						ImGui::SCP(232, 10);

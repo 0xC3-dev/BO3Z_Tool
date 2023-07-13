@@ -97,9 +97,9 @@ namespace Engine
 				entity.SetPlayerWeapon(entity.iPlayer1Index);
 				FeatureSettings::bP1WCycle = false;
 			}
-			if (FeatureSettings::bP1WCycleKey) // Need to add button toggle to menu instead of having it harded coded to true.
+			if (FeatureSettings::bP1WCycleKey)
 			{
-				if (GetAsyncKeyState(0x56) & 1) // V Key.
+				if (GetAsyncKeyState(AimSettings::iAimKey) & 1)
 				{
 					FeatureSettings::iP1WCValue = FeatureSettings::iP1WCValue + 1;
 					entity.SetPlayerWeapon(entity.iPlayer1Index);
