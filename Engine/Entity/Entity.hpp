@@ -75,30 +75,104 @@ namespace SDK
 
 		__inline void SetGodMode(int index, bool* state)
 		{
-			// Check whether we are back in lobby that way we don't crash the game. I'm sure this can be cleaner but it's a temp fix for now.
-			Utils::Read((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeDefaultValue, sizeof(GameValues::iPlayerGodModeDefaultValue), Game::hProc);
-
-			if (*state)
+			switch (index)
 			{
-				if (GameValues::iPlayerGodModeDefaultValue == 0)
-					return;
+			case 0:
+				// Check whether we are back in lobby that way we don't crash the game. I'm sure this can be cleaner but it's a temp fix for now.
+				Utils::Read((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayer1GodModeDefaultValue, sizeof(GameValues::iPlayer1GodModeDefaultValue), Game::hProc);
 
-				if (GameValues::iPlayerGodModeCurrentValue != GameValues::iPlayerGodModeOn)
+				if (*state)
 				{
-					Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOn, sizeof(GameValues::iPlayerGodModeOn), Game::hProc);
-					GameValues::iPlayerGodModeCurrentValue = GameValues::iPlayerGodModeOn;
-				}
-			}
-			else if (!*state)
-			{
-				if (GameValues::iPlayerGodModeCurrentValue == 0)
-					return;
+					if (GameValues::iPlayer1GodModeDefaultValue == 0)
+						return;
 
-				if (GameValues::iPlayerGodModeCurrentValue != GameValues::iPlayerGodModeOff)
-				{
-					Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOff, sizeof(GameValues::iPlayerGodModeOff), Game::hProc);
-					GameValues::iPlayerGodModeCurrentValue = GameValues::iPlayerGodModeOff;
+					if (GameValues::iPlayer1GodModeCurrentValue != GameValues::iPlayerGodModeOn)
+					{
+						Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOn, sizeof(GameValues::iPlayerGodModeOn), Game::hProc);
+						GameValues::iPlayer1GodModeCurrentValue = GameValues::iPlayerGodModeOn;
+					}
 				}
+				else if (!*state)
+				{
+					if (GameValues::iPlayer1GodModeCurrentValue != GameValues::iPlayerGodModeOff)
+					{
+						Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOff, sizeof(GameValues::iPlayerGodModeOff), Game::hProc);
+						GameValues::iPlayer1GodModeCurrentValue = GameValues::iPlayerGodModeOff;
+					}
+				}
+				break;
+			case 1:
+				// Check whether we are back in lobby that way we don't crash the game. I'm sure this can be cleaner but it's a temp fix for now.
+				Utils::Read((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayer2GodModeDefaultValue, sizeof(GameValues::iPlayer2GodModeDefaultValue), Game::hProc);
+
+				if (*state)
+				{
+					if (GameValues::iPlayer2GodModeDefaultValue == 0)
+						return;
+
+					if (GameValues::iPlayer2GodModeCurrentValue != GameValues::iPlayerGodModeOn)
+					{
+						Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOn, sizeof(GameValues::iPlayerGodModeOn), Game::hProc);
+						GameValues::iPlayer2GodModeCurrentValue = GameValues::iPlayerGodModeOn;
+					}
+				}
+				else if (!*state)
+				{
+					if (GameValues::iPlayer2GodModeCurrentValue != GameValues::iPlayerGodModeOff)
+					{
+						Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOff, sizeof(GameValues::iPlayerGodModeOff), Game::hProc);
+						GameValues::iPlayer2GodModeCurrentValue = GameValues::iPlayerGodModeOff;
+					}
+				}
+				break;
+			case 2:
+				// Check whether we are back in lobby that way we don't crash the game. I'm sure this can be cleaner but it's a temp fix for now.
+				Utils::Read((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayer3GodModeDefaultValue, sizeof(GameValues::iPlayer3GodModeDefaultValue), Game::hProc);
+
+				if (*state)
+				{
+					if (GameValues::iPlayer3GodModeDefaultValue == 0)
+						return;
+
+					if (GameValues::iPlayer3GodModeCurrentValue != GameValues::iPlayerGodModeOn)
+					{
+						Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOn, sizeof(GameValues::iPlayerGodModeOn), Game::hProc);
+						GameValues::iPlayer3GodModeCurrentValue = GameValues::iPlayerGodModeOn;
+					}
+				}
+				else if (!*state)
+				{
+					if (GameValues::iPlayer3GodModeCurrentValue != GameValues::iPlayerGodModeOff)
+					{
+						Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOff, sizeof(GameValues::iPlayerGodModeOff), Game::hProc);
+						GameValues::iPlayer3GodModeCurrentValue = GameValues::iPlayerGodModeOff;
+					}
+				}
+				break;
+			case 3:
+				// Check whether we are back in lobby that way we don't crash the game. I'm sure this can be cleaner but it's a temp fix for now.
+				Utils::Read((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayer4GodModeDefaultValue, sizeof(GameValues::iPlayer4GodModeDefaultValue), Game::hProc);
+
+				if (*state)
+				{
+					if (GameValues::iPlayer4GodModeDefaultValue == 0)
+						return;
+
+					if (GameValues::iPlayer4GodModeCurrentValue != GameValues::iPlayerGodModeOn)
+					{
+						Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOn, sizeof(GameValues::iPlayerGodModeOn), Game::hProc);
+						GameValues::iPlayer4GodModeCurrentValue = GameValues::iPlayerGodModeOn;
+					}
+				}
+				else if (!*state)
+				{
+					if (GameValues::iPlayer4GodModeCurrentValue != GameValues::iPlayerGodModeOff)
+					{
+						Utils::Write((BYTE*)Offsets::playerPedBaseAddr + (Offsets::zombieArraySize * index), (BYTE*)&GameValues::iPlayerGodModeOff, sizeof(GameValues::iPlayerGodModeOff), Game::hProc);
+						GameValues::iPlayer4GodModeCurrentValue = GameValues::iPlayerGodModeOff;
+					}
+				}
+				break;
 			}
 		}
 
@@ -206,7 +280,7 @@ namespace SDK
 		{
 			if (*state)
 			{
-				if (GameValues::iPlayerGodModeDefaultValue == 0)
+				if (GameValues::iPlayer1GodModeDefaultValue == 0)
 					return;
 
 				if (GameValues::noRecoilValue != std::byte(0x75))

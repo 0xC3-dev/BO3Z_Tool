@@ -175,8 +175,14 @@ namespace VisualSettings
 namespace GameValues
 {
 	// Player Feature Values
-	int iPlayerGodModeDefaultValue = 0;
-	int iPlayerGodModeCurrentValue = 0;
+	int iPlayer1GodModeDefaultValue = 0;
+	int iPlayer1GodModeCurrentValue = 0;
+	int iPlayer2GodModeDefaultValue = 0;
+	int iPlayer2GodModeCurrentValue = 0;
+	int iPlayer3GodModeDefaultValue = 0;
+	int iPlayer3GodModeCurrentValue = 0;
+	int iPlayer4GodModeDefaultValue = 0;
+	int iPlayer4GodModeCurrentValue = 0;
 	int iPlayerGodModeOn = 12297;
 	int iPlayerGodModeOff = 12296;
 	std::byte iPlayerNoRecoilOn = std::byte(0x75);

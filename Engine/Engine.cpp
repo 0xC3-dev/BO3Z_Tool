@@ -54,6 +54,8 @@ namespace Engine
 	{
 		if (FeatureSettings::bIsInGame)
 		{
+			printf("bIsInGame : %i\n\n", FeatureSettings::bIsInGame);
+			printf("bP1InfiniteHealth : %i\n\n", FeatureSettings::bP1InfiniteHealth);
 			if (FeatureSettings::bP1InfiniteHealth)
 			{
 				entity.SetGodMode(GameValues::iPlayer1Index, &FeatureSettings::bTrueState);
