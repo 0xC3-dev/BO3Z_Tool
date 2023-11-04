@@ -1,5 +1,5 @@
-// File: 'awesome_light.ttf' (254124 bytes)
-// Exported using binary_to_compressed_c.cpp
+#pragma once
+
 static const unsigned int awesome_light_compressed_size = 160844;
 static const unsigned int awesome_light_compressed_data[160844 / 4] =
 {

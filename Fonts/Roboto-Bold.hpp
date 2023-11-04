@@ -1,5 +1,5 @@
-// File: 'Roboto-Bold.ttf' (170348 bytes)
-// Exported using binary_to_compressed_c.cpp
+#pragma once
+
 static const unsigned int Roboto_compressed_size = 120458;
 static const unsigned int Roboto_compressed_data[120460 / 4] =
 {

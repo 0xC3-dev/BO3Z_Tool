@@ -1,5 +1,5 @@
 ﻿/*
-*	UPDATE Channel Log:
+*	UPDATE Change Log:
 *	
 *	Update : 01/23/23 | Updated Codebase. Fixed several bugs. Fixed crashing issues due to No Recoil and God Mode.
 *	
@@ -13,6 +13,8 @@
 * 
 *	Update : 07/13/23 | Added button toggle for weapon cycle. Also added combo box (aka dropdown menu) for selecting weapon cycle hotkey. Also added Zombie Counter toggle to Player 1 Exploits.
 * 
+*	Update : 11/03/23 | A lot has been updated. Mostly codebase updates with a sprinkle of ESP features added in.
+* 
 * 
 *	TODO:
 * 
@@ -22,7 +24,7 @@
 *	Config System: Add Config System to Load/Save feature states.
 */
 
-#include "BO3_Main.h"
+#include "BO3_Main.hpp"
 
 int main()
 {
@@ -38,6 +40,6 @@ int main()
 		Engine::Player4Features();
 		Engine::ExtraGoodieFeatures();
 		Engine::DisableAllFeatures();
-		Sleep(5);
+		Sleep(2);
 	}
 }

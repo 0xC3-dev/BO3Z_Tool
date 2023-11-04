@@ -1,3 +1,5 @@
+#pragma once
+
 static const unsigned int Awesome_size = 133405;
 static const unsigned int Awesome[133408 / 4] =
 {

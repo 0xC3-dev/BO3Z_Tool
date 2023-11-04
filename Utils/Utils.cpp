@@ -1,7 +1,19 @@
-﻿#include "Utils.h"
+﻿#include "Utils.hpp"
 
 namespace Utils
 {
+	bool ValidPointer(uintptr_t address)
+	{
+		if (notValidPtr(address))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
 	uintptr_t PointerChain(HANDLE hProc, uintptr_t ptr, std::vector<unsigned int> offsets)
 	{
 		uintptr_t addr = ptr;

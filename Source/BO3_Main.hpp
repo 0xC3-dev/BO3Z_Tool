@@ -1,8 +1,6 @@
 ﻿#pragma once
-#include "../Includes/Includes.h"
-#include "../Engine/Engine.h"
-#include "../Overlay/Overlay.h"
-#include "../Extra_Headers/Display_Messages.h"
+#include "../Overlay/Overlay.hpp"
+#include "../Extra_Headers/Display_Messages.hpp"
 
 namespace Startup
 {
@@ -31,7 +29,6 @@ namespace Startup
 	void GetGameInfo()
 	{
 		Game::procID = Utils::GetProcId("BlackOps3.exe");
-		Game::hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, Game::procID);
 		if (Game::procID < 1)
 		{
 			Notify::Popup("Load Black Ops 3 first!", "[ ERROR ]", MB_ICONWARNING | MB_DEFBUTTON2);
@@ -39,7 +36,10 @@ namespace Startup
 		}
 		else if (Game::procID > 1)
 		{
+			Game::hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, Game::procID);
 			Game::moduleBase = Utils::GetModuleBaseAddress(Game::procID, "BlackOps3.exe");
+			Engine::entity.SetPlayerAddr();
+			Engine::entity.SetZombieAddr();
 		}
 	}
 
@@ -47,6 +47,7 @@ namespace Startup
 	void CreateThreads()
 	{
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)Overlay::Loop, nullptr, 0, nullptr);
+		//CreateThread(0, 0, (LPTHREAD_START_ROUTINE)Engine::Aimbot::DoAimbot, nullptr, 0, nullptr);
 	}
 
 	// Config System.

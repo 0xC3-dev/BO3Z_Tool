@@ -43,7 +43,7 @@ Index of this file:
 //-----------------------------------------------------------------------------
 
 #ifndef IMGUI_VERSION
-#include "imgui.h"
+#include "imgui.hpp"
 #endif
 
 #include <stdio.h>      // FILE*, sscanf
@@ -186,7 +186,7 @@ namespace ImStb
 #define STB_TEXTEDIT_GETWIDTH_NEWLINE   (-1.0f)
 #define STB_TEXTEDIT_UNDOSTATECOUNT     99
 #define STB_TEXTEDIT_UNDOCHARCOUNT      999
-#include "imstb_textedit.h"
+#include "imstb_textedit.hpp"
 
 } // namespace ImStb
 

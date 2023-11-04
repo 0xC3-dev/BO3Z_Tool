@@ -1,8 +1,10 @@
 ﻿#pragma once
-#include "Entity/Entity_t.h"
+#include "Entity/Entity.hpp"
 
 namespace Engine
 {
+	extern SDK::Entity_t entity;
+
 	void IsInGame();
 	void Player1Features();
 	void Player2Features();
