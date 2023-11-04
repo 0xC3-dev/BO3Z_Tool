@@ -2,11 +2,20 @@
 Call of Duty: Black Ops 3 Zombie Tool
 
 ## Setup
-* No external dependencies are needed to be included
+* No external dependencies are needed to be included.
 * ```C++ Language Standard: ISO C++20 Standard (/std:c++20)```
 * ```C Language Standard: ISO C17 (2018) Standard (/std:c17)```
 * ```Character Set: Use Multi-Byte Character Set```
-* ```Linker->Command Line: /FORCE:MULTIPLE```
+* ```Optimizations have been enabled with the preset of favoring speed```
+
+## UPDATE
+* UPDATE #1 | 11/03/23 : Fixed crash relating to GodMode being enabled and the game session has either ended or host has backed out.
+* UPDATE #2 | 11/03/23 : Fixed crash relating to No Recoil being enabled and the game session has either ended or host has backed out.
+* UPDATE #3 | 11/03/23 : Optimization has been improved significantly. Addresses are no longer resolved on every run of the feature call. They are now resolved once per entering game session. Function inlining has been applied where applicable.
+
+## Credits
+* Dear ImGui Framework - ocornut / https://github.com/ocornut/imgui
+* DirectX 11 Framework - Microsoft / https://www.microsoft.com/en-us/download/details.aspx?id=6812
 
 ## Features
 * GodMode ( All Players )
@@ -36,7 +45,7 @@ Call of Duty: Black Ops 3 Zombie Tool
 * Config System: Add Config System to Load/Save feature states.
 
 ## NOTE
-* This tool will have bugs present. I have yet to go through and really cleanup alot but will be doing so little by little. If you wish to improve upon the codebase, feel free to make pull requests. Any contribution is welcome!
+* This tool will have bugs present. I will do my best to squash as many as possible. If you wish to improve upon the codebase, feel free to make pull requests. Meaningful contributions are always welcome!
 
 ## Tool Preview
 ![BO3Z_Tool1](https://cdn.discordapp.com/attachments/952164775771652106/1128441015896915998/image.png)
