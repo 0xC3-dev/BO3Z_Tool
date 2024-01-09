@@ -15,6 +15,8 @@
 * 
 *	Update : 11/03/23 | A lot has been updated. Mostly codebase updates with a sprinkle of ESP features added in.
 * 
+*   Update : 11/26/23 | Some small adjustments.
+* 
 * 
 *	TODO:
 * 
@@ -26,7 +28,7 @@
 
 #include "BO3_Main.hpp"
 
-int main()
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
 	Startup::SetConsoleAppInfo();
 	Startup::GetGameInfo();
@@ -34,12 +36,8 @@ int main()
 	while (true)
 	{
 		Engine::IsInGame();
-		Engine::Player1Features();
-		Engine::Player2Features();
-		Engine::Player3Features();
-		Engine::Player4Features();
-		Engine::ExtraGoodieFeatures();
+		Engine::PlayerFeatures();
 		Engine::DisableAllFeatures();
-		Sleep(2);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 }

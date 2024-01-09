@@ -4,6 +4,8 @@
 #include <TlHelp32.h>
 #include <cstdint>
 #include <vector>
+#include <thread>
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <tchar.h>
 #include <limits>
@@ -30,4 +32,5 @@
 #include "../Fonts/Awesome.hpp"
 #include "../Fonts/Awesome_Light.hpp"
 #include "../Fonts/FontAwesome5/font_awesome_5.hpp"
-#include "../Fonts/FontAwesome6/font_awesome_6.hpp"
+//#include "../Fonts/FontAwesome6/font_awesome_6.hpp"
+#include "../Engine/Vectors/Vectors.hpp"

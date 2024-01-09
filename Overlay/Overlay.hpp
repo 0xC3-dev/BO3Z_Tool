@@ -1,17 +1,5 @@
 ﻿#pragma once
-#pragma warning( disable: 4049 )  /* more than 64k source lines */
 #include "../Engine/Engine.hpp"
-#include "../imgui/imgui.hpp"
-#include "../imgui/imgui_impl_dx11.hpp"
-#include "../imgui/imgui_impl_win32.hpp"
-#include "../imgui/imgui_internal.hpp"
-#include "../Logo/BO3_Logo.hpp"
-#include "../Fonts/Roboto-Bold.hpp"
-#include "../Fonts/Awesome.hpp"
-#include "../Fonts/Awesome_Light.hpp"
-#include "../Fonts/FontAwesome5/font_awesome_5.hpp"
-#include "../Fonts/FontAwesome6/font_awesome_6.hpp"
-#define DIRECTINPUT_VERSION 0x0800
 
 #define WND_SIZEX GetSystemMetrics(SM_CXSCREEN)
 #define WND_SIZEY GetSystemMetrics(SM_CYSCREEN)
@@ -25,48 +13,45 @@ inline DWORD windowFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags
 
 namespace Overlay
 {
-    void Loop(void* blank);
+	void Loop();
 }
 
 namespace Render
 {
-    void Start();
+	void Start();
 
-    void End();
+	void End();
 
-    void Text(ImVec2 pos, float fontsize, ImColor color, const char* text_begin, const char* text_end, float wrap_width,
-        const ImVec4* cpu_fine_clip_rect);
+	void Text(ImVec2 pos, float fontsize, ImColor color, const char* text_begin, const char* text_end, float wrap_width, const ImVec4* cpu_fine_clip_rect);
 
-    void EasyText(ImVec2 pos, ImColor color, const char* text, float fontsize);
+	void RectFilled(float x0, float y0, float x1, float y1, ImColor color, float rounding, int rounding_corners_flags);
 
-    void EasyNumber(ImVec2 pos, ImColor color, int number, float fontsize);
+	void RectFilled2(float x, float y, float w, float h, ImColor color);
 
-    void RectFilled(int x0, int y0, int x1, int y1, ImColor color, float rounding, int rounding_corners_flags);
+	void Line(ImVec2 a, ImVec2 b, ImColor color, float thickness);
 
-    void RectFilled2(int x, int y, int w, int h, ImColor color);
+	void DrawBoxBrackets(ImDrawList* list, float x, float y, float width, float height, ImColor color, float thickness);
 
-    void Line(ImVec2 a, ImVec2 b, ImColor color, float thickness);
+	void EasyText(ImVec2 pos, ImColor color, const char* text, float fontSize);
 
-    void DrawBoxBrackets(ImDrawList* list, float x, float y, float width, float height, ImColor color, float thickness);
+	void EasyNumber(ImVec2 pos, ImColor color, int number, float fontSize);
 
-    void DrawBox(ImColor color, int x, int y, int w, int h);
+	void DrawBox(ImColor color, float x, float y, float w, float h);
 
-    void Circle(ImColor color, float fov);
+	void Circle(ImColor color, float fov);
 
-    void HealthBar(int x, int y, int w, int h, int ehealth);
+	void HealthBar(float x, float y, float w, float h, int ehealth);
 
-    void CustomHealthColor(float currentHealth, float maxHealth, ImColor* healthColor);
+	void CustomHealthColor(float currentHealth, float maxHealth, ImColor* healthColor);
 
-    float DrawOutlinedText(ImFont* pFont, const ImVec2& pos, float size, ImU32 color, bool center, const char* text, ...);
+	float DrawOutlinedText(ImFont* pFont, const ImVec2& pos, float size, ImU32 color, bool center, const char* text, ...);
 }
 
 namespace Menu
 {
-    void RenderStatic();
+	void RenderStatic();
 
-    void RenderMenu();
-
-    void RenderFeatures();
+	void RenderMenu();
 }
 
 namespace ImGui
@@ -87,48 +72,48 @@ namespace ImGui
 
 	void RenderLogo();
 
-	void SCP(float x, float y);
-	
-	void SCPX(float x);
-	
-	void SCPY(float y);
-	
+	void SCP(float xPos, float yPos);
+
+	void SCPX(float xPos);
+
+	void SCPY(float yPos);
+
 	void Line(int newId);
-	
+
 	void CenterText(const char* text, int lineId, BOOL separator, BOOL newLine);
-	
+
 	void TextNL(const char* text, BOOL newLine);
-	
+
 	void TextSL(const char* text, BOOL sameLine, BOOL newLine);
-	
-	void TextSCP(const char* text, int x, int y);
-	
+
+	void TextSCP(const char* text, float xPos, float yPos);
+
 	void TextColor(const char* text, ImVec4 color, int lineId, BOOL seperator, BOOL newLine);
-	
+
 	void ButtonNL(const char* featureName, bool* featureBool, ImVec2 size, BOOL newLine);
-	
-	void ButtonSCP(const char* featureName, bool* featureBool, int x, int y, ImVec2 size, BOOL newLine);
-	
-	void ButtonIntSCP(const char* featureName, int* featureInt, int value, int x, int y, ImVec2 size, BOOL newLine);
-	
+
+	void ButtonSCP(const char* featureName, bool* featureBool, float xPos, float yPos, ImVec2 size, BOOL newLine);
+
+	void ButtonIntSCP(const char* featureName, int* featureInt, int value, float xPos, float yPos, ImVec2 size, BOOL newLine);
+
 	void ButtonPageSCP(const char* label, int* page, int pageNumber, ImVec2 pos, ImVec2 size, BOOL newLine);
-	
+
 	void ButtonWindowSCP(const char* label, int* page, int pageNumber, ImVec2 pos, ImVec2 size, BOOL newLine);
-	
-	void InputIntNL(const char* featureName, int* featureInt, bool* featureBool, int size, BOOL sameLine, BOOL newLine);
-	
+
+	void InputIntNL(const char* featureName, int* featureInt, bool* featureBool, float size, BOOL sameLine, BOOL newLine);
+
 	void ColorEditFeature(const char* featureName, float* colorEditFloat, BOOL newLine);
-	
-	void WeaponCycleComboBox(const char* featureName, int size, BOOL newLine);
-	
-	void ZombieTPComboBox(const char* featureName, int size, BOOL newLine);
-	
+
+	void WeaponCycleComboBox(const char* featureName, float size, BOOL newLine);
+
+	void ZombieTPComboBox(const char* featureName, float size, BOOL newLine);
+
 	void ToggleNL(const char* toggleName, bool* featureBool, BOOL newLine);
-	
+
 	float GetX();
-	
+
 	float GetY();
-	
+
 	void SetGUITheme();
 #pragma endregion
 

@@ -103,7 +103,7 @@ namespace FeatureSettings
 #pragma endregion
 #pragma region Extra Goodies Bools
 	bool bJetPack = false;
-	bool bAimbot = false;
+	bool bAimbot = true;
 	bool bZombieCount = false;
 	bool bNoRecoilOn = false;
 	bool bNoRecoilOff = false;
@@ -114,16 +114,25 @@ namespace FeatureSettings
 
 namespace AimSettings
 {
+	float fCurrentDist = NULL;
+	float fClosestDist = FLT_MAX;
+	float fCacheDist[24] = { };
+	float fFov = NULL;
+	int iBestTarget = -1;
+	int iCheckTarget = NULL;
+	vec2_t vScreen = { 0, 0 };
+	vec2_t vHead = { 0, 0 };
+	//
 	float fFovLimit = 0;
-	float fAimSmooth = 1.f;
+	float fAimSmooth = 1.5f;
 	int iAimKey = 0x0;
 }
 
 namespace MiscSettings
 {
 	bool bCrosshair = true;
-	bool bPlayerFov = false;
-	float fPlayerFovSize = 175.f;
+	bool bPlayerFov = true;
+	float fPlayerFovSize = 300.f;
 	int iZombieTPKey = 0x0;
 }
 
@@ -131,7 +140,7 @@ namespace VisualSettings
 {
 	bool bRecoilText = false;
 	bool bZombieSnaplines = false;
-	bool bZombieSnaplinesTop = true;
+	bool bZombieSnaplinesTop = false;
 	bool bZombieSnaplinesMid = false;
 	bool bZombieSnaplinesBottom = false;
 	int iZombieSnaplinePos = 1;
@@ -205,7 +214,7 @@ namespace GameValues
 	int iPlayer2NewWeaponValue = 0;
 	int iPlayer3NewWeaponValue = 0;
 	int iPlayer4NewWeaponValue = 0;
-	int iPlayerNoSpreadValue = 0.f;
+	int iPlayerNoSpreadValue = 0;
 	float fPlayer1NewRunSpeedValue = 1.f;
 	float fPlayer2NewRunSpeedValue = 1.f;
 	float fPlayer3NewRunSpeedValue = 1.f;
@@ -258,6 +267,7 @@ namespace GameValues
 namespace Offsets
 {
 #pragma region Player Vars
+	DWORD viewMatrix = 0x36752A0;
 	uintptr_t playerBasePtr = 0xA549DE0;
 	uintptr_t playerPedPtr = 0xA549DE8;
 	uintptr_t playerNoRecoilPtr = 0x11BD903; // \x84\xc0\x74\x00\x32\xc0\xe9\x00\x00\x00\x00\x48\x83\xc4 xxx?xxx????xxx // 84 c0 74 ? 32 c0 e9 ? ? ? ? 48 83 c4
@@ -301,7 +311,6 @@ namespace Offsets
 	std::vector <unsigned int> playerXView = { 0xD0 };
 	std::vector <unsigned int> playerYView = { 0xD4 };
 	std::vector <unsigned int> playerZView = { 0xD8 };
-	
 #pragma endregion
 
 #pragma region Zombie Vars

@@ -2,17 +2,17 @@
 
 inline MARGINS gMargin = { 0, 0, 600, 600 };
 inline MARGINS zero = { -1, -1, -1, -1 };
-inline  DWORD lastFrameTime = 0;
-inline  int lastTick = 0;
+inline DWORD dwLastFrameTime = 0;
+inline int iLastTick = 0;
 
 void LimitFPS(int targetfps)
 {
     DWORD currentTime = timeGetTime();
-    if ((currentTime - lastFrameTime) < (1000 / targetfps))
+    if ((int)(currentTime - dwLastFrameTime) < (1000 / targetfps))
     {
-        Sleep(currentTime - lastFrameTime);
+		std::this_thread::sleep_for(std::chrono::milliseconds(currentTime - dwLastFrameTime));
     }
-    lastFrameTime = currentTime;
+	dwLastFrameTime = currentTime;
 }
 
 void ClickThough(bool click)
@@ -37,7 +37,7 @@ static ID3D11Device* g_pd3dDevice = NULL;
 static ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
 static IDXGISwapChain* g_pSwapChain = NULL;
 static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
-ID3D11ShaderResourceView* renderLogo = nullptr;
+static ID3D11ShaderResourceView* renderLogo = nullptr;
 
 void CreateRenderTarget()
 {
@@ -93,15 +93,15 @@ void CleanupDeviceD3D()
 
 LRESULT WINAPI WndProc(HWND HookhWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-extern __inline void Overlay::Loop(void* blank)
+void Overlay::Loop()
 {
     UI::iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
     UI::iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
     CalcScreenPos();
 
-    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, "BO3Z_Tool", NULL};
+    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, "BO3 Zombie Tool", NULL};
     ::RegisterClassEx(&wc);
-	UI::hWnd = ::CreateWindow(wc.lpszClassName, "BO3Z_Tool", WS_EX_TOPMOST | WS_POPUP, 0, 0, UI::iScreenWidth, UI::iScreenHeight, NULL, NULL, wc.hInstance, NULL);
+	UI::hWnd = ::CreateWindow(wc.lpszClassName, "BO3 Zombie Tool", WS_EX_TOPMOST | WS_POPUP, 0, 0, UI::iScreenWidth, UI::iScreenHeight, NULL, NULL, wc.hInstance, NULL);
     ClickThough(true);
     SetLayeredWindowAttributes(UI::hWnd, 0, 255, LWA_ALPHA);
     gMargin = { 0, 0, UI::iScreenWidth, UI::iScreenHeight };
@@ -156,10 +156,10 @@ extern __inline void Overlay::Loop(void* blank)
         LimitFPS(144);
         if (GetKeyState(VK_INSERT) & 0x8000)
         {
-            if ((GetTickCount64() - lastTick) > 1000)
+            if (((int)GetTickCount64() - iLastTick) > 1000)
             {
                 UI::bShowMenu = !UI::bShowMenu;
-                lastTick = GetTickCount64();
+				iLastTick = (int)GetTickCount64();
             }
         }
         if (UI::bShowMenu)
@@ -170,7 +170,8 @@ extern __inline void Overlay::Loop(void* blank)
             Render::Start();
             Menu::RenderMenu();
             Menu::RenderStatic();
-            Menu::RenderFeatures();
+			Engine::ESP::DoESP();
+			Engine::ESP::MiscFeatures();
             Render::End();
             ClickThough(false);
         }
@@ -181,7 +182,8 @@ extern __inline void Overlay::Loop(void* blank)
             colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
             Render::Start();
             Menu::RenderStatic();
-            Menu::RenderFeatures();
+			Engine::ESP::DoESP();
+			Engine::ESP::MiscFeatures();
             Render::End();
             ClickThough(true);
         }
@@ -232,194 +234,6 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-namespace Render
-{
-	extern __inline void Start()
-	{
-		ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(UI::iScreenWidth, UI::iScreenHeight), ImGuiCond_Always);
-		ImGui::Begin("TransparentBackgroundWindow", (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-			ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs);
-	}
-
-	extern __inline void End()
-	{
-		ImGui::End();
-	}
-
-	extern __inline void Text(ImVec2 pos, float fontsize, ImColor color, const char* text_begin, const char* text_end, float wrap_width, const ImVec4* cpu_fine_clip_rect)
-	{
-		ImGui::GetWindowDrawList()->AddText(ImGui::GetFont(), fontsize, pos, color, text_begin, text_end,
-			wrap_width, cpu_fine_clip_rect);
-	}
-
-	extern __inline void RectFilled(int x0, int y0, int x1, int y1, ImColor color, float rounding, int rounding_corners_flags)
-	{
-		ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(x0, y0), ImVec2(x1, y1), color, rounding, rounding_corners_flags);
-	}
-
-	extern __inline void RectFilled2(int x, int y, int w, int h, ImColor color)
-	{
-		ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), color, 0, 0);
-	}
-
-	extern __inline void Line(ImVec2 a, ImVec2 b, ImColor color, float thickness)
-	{
-		ImGui::GetWindowDrawList()->AddLine(a, b, color, thickness);
-	}
-
-	extern __inline void DrawBoxBrackets(ImDrawList* list, float x, float y, float width, float height, ImColor color, float thickness)
-	{
-		ImVec2 dLine[2];
-		dLine[0] = { x, y };
-		dLine[1] = { x + 1 * (width / 4), y };
-		list->AddLine(dLine[0], dLine[1], color, thickness);
-
-		dLine[0] = { x + 3 * (width / 4), y };
-		dLine[1] = { x + width, y };
-		list->AddLine(dLine[0], dLine[1], color, thickness);
-
-		dLine[0] = { x + width, y };
-		dLine[1] = { x + width, y + 1 * (height / 4) };
-		list->AddLine(dLine[0], dLine[1], color, thickness);
-
-		dLine[0] = { x + width, y + 3 * (height / 4) };
-		dLine[1] = { x + width, y + height };
-		list->AddLine(dLine[0], dLine[1], color, thickness);
-
-		dLine[0] = { x, y + height };
-		dLine[1] = { x + 1 * (width / 4), y + height };
-		list->AddLine(dLine[0], dLine[1], color, thickness);
-
-		dLine[0] = { x + 3 * (width / 4), y + height };
-		dLine[1] = { x + width, y + height };
-		list->AddLine(dLine[0], dLine[1], color, thickness);
-
-		dLine[0] = { x, y };
-		dLine[1] = { x, y + 1 * (height / 4) };
-		list->AddLine(dLine[0], dLine[1], color, thickness);
-
-		dLine[0] = { x, y + 3 * (height / 4) };
-		dLine[1] = { x, y + height };
-		list->AddLine(dLine[0], dLine[1], color, thickness);
-	}
-
-	extern __inline void EasyText(ImVec2 pos, ImColor color, const char* text, float fontsize)
-	{
-		Text(ImVec2(pos.x + 1.f, pos.y + 1.f), 15.f, ImColor(0.f, 0.f, 0.f, 1.f), text, text + strlen(text), 800, 0);
-		Text(ImVec2(pos.x - 1.f, pos.y - 1.f), 15.f, ImColor(0.f, 0.f, 0.f, 1.f), text, text + strlen(text), 800, 0);
-		Text(ImVec2(pos.x, pos.y - 1.f), 15.f, ImColor(0.f, 0.f, 0.f, 1.f), text, text + strlen(text), 800, 0);
-		Text(ImVec2(pos.x, pos.y + 1.f), 15.f, ImColor(0.f, 0.f, 0.f, 1.f), text, text + strlen(text), 800, 0);
-		Text(ImVec2(pos.x, pos.y), 15.f, color, text, text + strlen(text), 800, 0);
-	}
-
-	extern __inline void EasyNumber(ImVec2 pos, ImColor color, int number, float fontsize)
-	{
-		auto text = std::to_string(number);
-		Text(ImVec2(pos.x + 1.f, pos.y + 1.f), 15.f, ImColor(0.f, 0.f, 0.f, 1.f), text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
-		Text(ImVec2(pos.x - 1.f, pos.y - 1.f), 15.f, ImColor(0.f, 0.f, 0.f, 1.f), text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
-		Text(ImVec2(pos.x, pos.y - 1.f), 15.f, ImColor(0.f, 0.f, 0.f, 1.f), text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
-		Text(ImVec2(pos.x, pos.y + 1.f), 15.f, ImColor(0.f, 0.f, 0.f, 1.f), text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
-		Text(ImVec2(pos.x, pos.y), 15.f, color, text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
-	}
-
-	extern __inline void DrawBox(ImColor color, int x, int y, int w, int h)
-	{
-		float thicc = 1.0f;
-		Line(ImVec2(x, y), ImVec2(x + w, y), color, thicc);
-		Line(ImVec2(x, y), ImVec2(x, y + h), color, thicc);
-		Line(ImVec2(x + w, y), ImVec2(x + w, y + h), color, thicc);
-		Line(ImVec2(x, y + h), ImVec2(x + w, y + h), color, thicc);
-	}
-
-	extern __inline void Circle(ImColor color, float fov)
-	{
-		ImVec2 center = ImVec2(UI::iScreenWidth / 2, UI::iScreenHeight / 2);
-		ImGui::GetWindowDrawList()->AddCircle(center, fov, color, 100, 1.f);
-	}
-
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
-	extern __inline void HealthBar(int x, int y, int w, int h, int ehealth)
-	{
-		int healthValue = max(0, min(ehealth, 100));
-		float HealthPerc = healthValue / 100.f;
-
-		ImColor barColor = ImColor
-		(
-			min(510 * (100 - healthValue) / 100, 255),
-			min(510 * healthValue / 100, 255),
-			25,
-			255
-		);
-
-		RectFilled(x, y, x + w, y + (int)(((float)h / 100.0f) * (float)ehealth), barColor, 0.0f, 0);
-	}
-
-	extern __inline void CustomHealthColor(float currentHealth, float maxHealth, ImColor* healthColor)
-	{
-		int healthValue = max(0, min(currentHealth, maxHealth));
-		float HealthPerc = healthValue / maxHealth;
-
-		ImColor lerpColor = ImColor
-		(
-			min(510 * ((int)maxHealth - healthValue) / (int)maxHealth, 255),
-			min(510 * healthValue / (int)maxHealth, 255),
-			25,
-			255
-		);
-
-		*healthColor = lerpColor;
-	}
-
-	extern __inline float DrawOutlinedText(ImFont* pFont, const ImVec2& pos, float size, ImU32 color, bool center, const char* text, ...)
-	{
-		va_list(args);
-		va_start(args, text);
-
-		CHAR wbuffer[256] = { };
-		vsprintf_s(wbuffer, text, args);
-
-		va_end(args);
-
-		auto DrawList = ImGui::GetForegroundDrawList();
-
-		std::stringstream stream(text);
-		std::string line;
-
-		float y = 0.0f;
-		int i = 0;
-
-		while (std::getline(stream, line))
-		{
-			ImVec2 textSize = pFont->CalcTextSizeA(size, FLT_MAX, 0.0f, wbuffer);
-
-			if (center)
-			{
-				DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
-				DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
-				DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
-				DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
-
-				DrawList->AddText(pFont, size, ImVec2(pos.x - textSize.x / 2.0f, pos.y + textSize.y * i), ImGui::GetColorU32(color), wbuffer);
-			}
-			else
-			{
-				DrawList->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
-				DrawList->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
-				DrawList->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
-				DrawList->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
-
-				DrawList->AddText(pFont, size, ImVec2(pos.x, pos.y + textSize.y * i), ImGui::GetColorU32(color), wbuffer);
-			}
-
-			y = pos.y + textSize.y * (i + 1);
-			i++;
-		}
-		return y;
-	}
-}
-
 namespace ImGui
 {
 #pragma region GUI Setup Functions
@@ -436,27 +250,27 @@ namespace ImGui
 	ImVec4 active = ImVec4(ImColor(255, 100, 15, 255));
 	ImVec4 inactive = ImVec4(ImColor(255, 100, 15, 75));
 
-	__inline void ImGui::RenderLogo()
+	void ImGui::RenderLogo()
 	{
-		ImGui::Image((void*)renderLogo, ImVec2(UI::iLogoWidth, UI::iLogoHeight));
+		ImGui::Image((void*)renderLogo, ImVec2((float)UI::iLogoWidth, (float)UI::iLogoHeight));
 	}
 
-	__inline void SCP(float x, float y)
+	void SCP(float xPos, float yPos)
 	{
-		ImGui::SetCursorPos(ImVec2(x, y));
+		ImGui::SetCursorPos(ImVec2(xPos, yPos));
 	}
 
-	__inline void SCPX(float x)
+	void SCPX(float xPos)
 	{
-		ImGui::SetCursorPosX(x);
+		ImGui::SetCursorPosX(xPos);
 	}
 
-	__inline void SCPY(float y)
+	void SCPY(float yPos)
 	{
-		ImGui::SetCursorPosY(y);
+		ImGui::SetCursorPosY(yPos);
 	}
 
-	__inline void Line(int newId)
+	void Line(int newId)
 	{
 		std::string id = ("ImGui_Sauce_line_" + std::to_string(newId));
 		ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(0, 0, 0, 0));
@@ -468,7 +282,7 @@ namespace ImGui
 		ImGui::PopStyleColor();
 	}
 
-	__inline void CenterText(const char* text, int lineId, BOOL separator, BOOL newLine)
+	void CenterText(const char* text, int lineId, BOOL separator, BOOL newLine)
 	{
 		ImGui::Spacing();
 		ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (ImGui::CalcTextSize(text).x / 2));
@@ -485,7 +299,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void TextNL(const char* text, BOOL newLine)
+	void TextNL(const char* text, BOOL newLine)
 	{
 		ImGui::Text(text);
 		if (newLine)
@@ -494,7 +308,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void TextSL(const char* text, BOOL sameLine, BOOL newLine)
+	void TextSL(const char* text, BOOL sameLine, BOOL newLine)
 	{
 		ImGui::Text(text);
 		if (sameLine)
@@ -507,13 +321,13 @@ namespace ImGui
 		}
 	}
 
-	__inline void TextSCP(const char* text, int x, int y)
+	void TextSCP(const char* text, float xPos, float yPos)
 	{
-		ImGui::SCP(x, y);
+		ImGui::SCP(xPos, yPos);
 		ImGui::Text(text);
 	}
 
-	__inline void TextColor(const char* text, ImVec4 color, int lineId, BOOL seperator, BOOL newLine)
+	void TextColor(const char* text, ImVec4 color, int lineId, BOOL seperator, BOOL newLine)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color));
 		ImGui::Text(text);
@@ -529,7 +343,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void ButtonNL(const char* featureName, bool* featureBool, ImVec2 size, BOOL newLine)
+	void ButtonNL(const char* featureName, bool* featureBool, ImVec2 size, BOOL newLine)
 	{
 		if (ImGui::Button(featureName, size))
 		{
@@ -541,9 +355,9 @@ namespace ImGui
 		}
 	}
 
-	__inline void ButtonSCP(const char* featureName, bool* featureBool, int x, int y, ImVec2 size, BOOL newLine)
+	void ButtonSCP(const char* featureName, bool* featureBool, float xPos, float yPos, ImVec2 size, BOOL newLine)
 	{
-		ImGui::SCP(x, y);
+		ImGui::SCP(xPos, yPos);
 		if (ImGui::Button(featureName, size))
 		{
 			*featureBool = !*featureBool;
@@ -554,9 +368,9 @@ namespace ImGui
 		}
 	}
 
-	__inline void ButtonIntSCP(const char* featureName, int* featureInt, int value, int x, int y, ImVec2 size, BOOL newLine)
+	void ButtonIntSCP(const char* featureName, int* featureInt, int value, float xPos, float yPos, ImVec2 size, BOOL newLine)
 	{
-		ImGui::SCP(x, y);
+		ImGui::SCP(xPos, yPos);
 		if (ImGui::Button(featureName, size))
 		{
 			*featureInt = value;
@@ -567,7 +381,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void ButtonPageSCP(const char* label, int* page, int pageNumber, ImVec2 pos, ImVec2 size, BOOL newLine)
+	void ButtonPageSCP(const char* label, int* page, int pageNumber, ImVec2 pos, ImVec2 size, BOOL newLine)
 	{
 		ImGui::SCP(pos.x, pos.y);
 		ImGui::PushStyleColor(ImGuiCol_Button, UI::iTab == pageNumber ? active : inactive);
@@ -582,7 +396,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void ButtonWindowSCP(const char* label, int* page, int pageNumber, ImVec2 pos, ImVec2 size, BOOL newLine)
+	void ButtonWindowSCP(const char* label, int* page, int pageNumber, ImVec2 pos, ImVec2 size, BOOL newLine)
 	{
 		ImGui::SCP(pos.x, pos.y);
 		if (ImGui::Button(label, size))
@@ -595,7 +409,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void InputIntNL(const char* featureName, int* featureInt, bool* featureBool, int size, BOOL sameLine, BOOL newLine)
+	void InputIntNL(const char* featureName, int* featureInt, bool* featureBool, float size, BOOL sameLine, BOOL newLine)
 	{
 		ImGui::PushItemWidth(size);
 		if (ImGui::InputInt(featureName, featureInt))
@@ -613,7 +427,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void ColorEditFeature(const char* featureName, float* colorEditFloat, BOOL newLine)
+	void ColorEditFeature(const char* featureName, float* colorEditFloat, BOOL newLine)
 	{
 		ImGui::PushItemWidth(105);
 		ImGui::ColorEdit3(featureName, colorEditFloat, ImGuiColorEditFlags_NoInputs);
@@ -624,7 +438,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void WeaponCycleComboBox(const char* featureName, int size, BOOL newLine)
+	void WeaponCycleComboBox(const char* featureName, float size, BOOL newLine)
 	{
 		const char* cWeaponCycleKeySelection[] = { (" LMB"), (" RMB"), (" MMB"), (" X1MB"), (" X2MB"), (" TAB"), (" LSHIFT"), (" LCTRL"), (" LALT"), (" CAPS"), (" SPACE"),
 			(" '0'"), (" '1'"), (" '2'"), (" '3'"), (" 'C'"), (" 'E'"), (" 'F'"), (" 'Q'"), (" 'V'"), (" 'X'"), (" 'Z'"), (" LWIN") };
@@ -743,7 +557,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void ZombieTPComboBox(const char* featureName, int size, BOOL newLine)
+	void ZombieTPComboBox(const char* featureName, float size, BOOL newLine)
 	{
 		const char* cZombieTPKeySelection[] = { (" LMB"), (" RMB"), (" MMB"), (" X1MB"), (" X2MB"), (" TAB"), (" LSHIFT"), (" LCTRL"), (" LALT"), (" CAPS"), (" SPACE"),
 			(" '0'"), (" '1'"), (" '2'"), (" '3'"), (" 'C'"), (" 'E'"), (" 'F'"), (" 'Q'"), (" 'V'"), (" 'X'"), (" 'Z'"), (" LWIN") };
@@ -862,7 +676,7 @@ namespace ImGui
 		}
 	}
 
-	__inline void ToggleNL(const char* toggleName, bool* featureBool, BOOL newLine)
+	void ToggleNL(const char* toggleName, bool* featureBool, BOOL newLine)
 	{
 		ImVec2 p = ImGui::GetCursorScreenPos();
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -903,17 +717,17 @@ namespace ImGui
 		}
 	}
 
-	__inline float GetX()
+	float GetX()
 	{
 		return ImGui::GetContentRegionAvail().x;
 	}
 
-	__inline float GetY()
+	float GetY()
 	{
 		return ImGui::GetContentRegionAvail().y;
 	}
 
-	__inline void SetGUITheme()
+	void SetGUITheme()
 	{
 		ImGui::SetColorEditOptions(ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_PickerHueWheel);
 		ImGuiStyle* Style = &ImGui::GetStyle();
@@ -953,13 +767,13 @@ namespace ImGui
 #pragma endregion
 
 #pragma region Main GUI Render Function
-	__inline void RenderGUI()
+	void RenderGUI()
 	{
 		// Main Child Window.
 		if (ImGui::BeginChild("MainChildWindow", ImVec2(600, 500), true, windowFlags))
 		{
 			// Top Logo Window.
-			ImGui::SCP(1, 0);
+			ImGui::SCP(0, 0);
 			ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(DarkGrey22));
 			if (ImGui::BeginChild("TopLogoWindow", ImVec2(144, 120), true, windowFlags))
 			{
@@ -1242,26 +1056,203 @@ namespace ImGui
 
 void Menu::RenderStatic()
 {
-    ImGuiStyle* style2 = &ImGui::GetStyle();
-    std::string toptext;
-    toptext = "Open Source BO3 ZM Tool";
-    const char* text = toptext.c_str();
-    Render::EasyText(ImVec2(10, 10), ImColor(ImVec4(1.0f, 1.0f, 1.0f, 1.0f)), text, 15.f);
+    Render::EasyText(ImVec2(10, 10), ImColor(255, 255, 255, 255), "Open Source BO3 ZM Tool", 15.f);
 }
 
 void Menu::RenderMenu()
 {
-    ImGui::SetNextWindowPos(ImVec2(UI::iGuiX / 2, UI::iGuiY / 2), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2((float)UI::iGuiX / 2.f, (float)UI::iGuiY / 2.f), ImGuiCond_Once);
 
     ImGui::SetGUITheme();
 
-    if (ImGui::Begin("BO3Z_Tool", 0, windowFlags))
+    if (ImGui::Begin("BO3 Zombie Tool", 0, windowFlags))
     {
         ImGui::RenderGUI();
     } ImGui::End();
 }
 
-void Menu::RenderFeatures()
+namespace Render
 {
-    Engine::ESP::FeatureLoop();
+	void Start()
+	{
+		ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2((float)UI::iScreenWidth, (float)UI::iScreenHeight), ImGuiCond_Always);
+		ImGui::Begin("TransparentBackgroundWindow", (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs);
+	}
+
+	void End()
+	{
+		ImGui::End();
+	}
+
+	extern __inline void Text(ImVec2 pos, float fontsize, ImColor color, const char* text_begin, const char* text_end, float wrap_width, const ImVec4* cpu_fine_clip_rect)
+	{
+		ImGui::GetWindowDrawList()->AddText(ImGui::GetFont(), fontsize, pos, color, text_begin, text_end,
+			wrap_width, cpu_fine_clip_rect);
+	}
+
+	extern __inline void RectFilled(float x0, float y0, float x1, float y1, ImColor color, float rounding, int rounding_corners_flags)
+	{
+		ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(x0, y0), ImVec2(x1, y1), color, rounding, rounding_corners_flags);
+	}
+
+	extern __inline void RectFilled2(float x, float y, float w, float h, ImColor color)
+	{
+		ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), color, 0, 0);
+	}
+
+	extern __inline void Line(ImVec2 a, ImVec2 b, ImColor color, float thickness)
+	{
+		ImGui::GetWindowDrawList()->AddLine(a, b, color, thickness);
+	}
+
+	extern __inline void DrawBoxBrackets(ImDrawList* list, float x, float y, float width, float height, ImColor color, float thickness)
+	{
+		ImVec2 dLine[2];
+		dLine[0] = { x, y };
+		dLine[1] = { x + 1 * (width / 4), y };
+		list->AddLine(dLine[0], dLine[1], color, thickness);
+
+		dLine[0] = { x + 3 * (width / 4), y };
+		dLine[1] = { x + width, y };
+		list->AddLine(dLine[0], dLine[1], color, thickness);
+
+		dLine[0] = { x + width, y };
+		dLine[1] = { x + width, y + 1 * (height / 4) };
+		list->AddLine(dLine[0], dLine[1], color, thickness);
+
+		dLine[0] = { x + width, y + 3 * (height / 4) };
+		dLine[1] = { x + width, y + height };
+		list->AddLine(dLine[0], dLine[1], color, thickness);
+
+		dLine[0] = { x, y + height };
+		dLine[1] = { x + 1 * (width / 4), y + height };
+		list->AddLine(dLine[0], dLine[1], color, thickness);
+
+		dLine[0] = { x + 3 * (width / 4), y + height };
+		dLine[1] = { x + width, y + height };
+		list->AddLine(dLine[0], dLine[1], color, thickness);
+
+		dLine[0] = { x, y };
+		dLine[1] = { x, y + 1 * (height / 4) };
+		list->AddLine(dLine[0], dLine[1], color, thickness);
+
+		dLine[0] = { x, y + 3 * (height / 4) };
+		dLine[1] = { x, y + height };
+		list->AddLine(dLine[0], dLine[1], color, thickness);
+	}
+
+	extern __inline void EasyText(ImVec2 pos, ImColor color, const char* text, float fontSize)
+	{
+		Text(ImVec2(pos.x + 1.f, pos.y + 1.f), fontSize, ImColor(0.f, 0.f, 0.f, 1.f), text, text + strlen(text), 800, 0);
+		Text(ImVec2(pos.x - 1.f, pos.y - 1.f), fontSize, ImColor(0.f, 0.f, 0.f, 1.f), text, text + strlen(text), 800, 0);
+		Text(ImVec2(pos.x, pos.y - 1.f), fontSize, ImColor(0.f, 0.f, 0.f, 1.f), text, text + strlen(text), 800, 0);
+		Text(ImVec2(pos.x, pos.y + 1.f), fontSize, ImColor(0.f, 0.f, 0.f, 1.f), text, text + strlen(text), 800, 0);
+		Text(ImVec2(pos.x, pos.y), fontSize, color, text, text + strlen(text), 800, 0);
+	}
+
+	extern __inline void EasyNumber(ImVec2 pos, ImColor color, int number, float fontSize)
+	{
+		auto text = std::to_string(number);
+		Text(ImVec2(pos.x + 1.f, pos.y + 1.f), fontSize, ImColor(0.f, 0.f, 0.f, 1.f), text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
+		Text(ImVec2(pos.x - 1.f, pos.y - 1.f), fontSize, ImColor(0.f, 0.f, 0.f, 1.f), text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
+		Text(ImVec2(pos.x, pos.y - 1.f), fontSize, ImColor(0.f, 0.f, 0.f, 1.f), text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
+		Text(ImVec2(pos.x, pos.y + 1.f), fontSize, ImColor(0.f, 0.f, 0.f, 1.f), text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
+		Text(ImVec2(pos.x, pos.y), fontSize, color, text.c_str(), text.c_str() + strlen(text.c_str()), 800, 0);
+	}
+
+	extern __inline void DrawBox(ImColor color, float x, float y, float w, float h)
+	{
+		float thicc = 1.0f;
+		Line(ImVec2(x, y), ImVec2(x + w, y), color, thicc);
+		Line(ImVec2(x, y), ImVec2(x, y + h), color, thicc);
+		Line(ImVec2(x + w, y), ImVec2(x + w, y + h), color, thicc);
+		Line(ImVec2(x, y + h), ImVec2(x + w, y + h), color, thicc);
+	}
+
+	extern __inline void Circle(ImColor color, float fov)
+	{
+		ImVec2 center = ImVec2((float)UI::iScreenWidth / 2, (float)UI::iScreenHeight / 2);
+		ImGui::GetWindowDrawList()->AddCircle(center, fov, color, 100, 1.f);
+	}
+
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+	extern __inline void HealthBar(float x, float y, float w, float h, int ehealth)
+	{
+		int healthValue = max(0, min(ehealth, 100));
+
+		ImColor barColor = ImColor
+		(
+			min(510 * (100 - healthValue) / 100, 255),
+			min(510 * healthValue / 100, 255),
+			25,
+			255
+		);
+
+		RectFilled(x, y, x + w, y + (int)((h / 100.0f) * (float)ehealth), barColor, 0.0f, 0);
+	}
+
+	extern __inline void CustomHealthColor(float currentHealth, float maxHealth, ImColor* healthColor)
+	{
+		int healthValue = (int)(max(0, min(currentHealth, maxHealth)));
+
+		ImColor lerpColor = ImColor
+		(
+			min(510 * ((int)maxHealth - healthValue) / (int)maxHealth, 255),
+			min(510 * healthValue / (int)maxHealth, 255),
+			25,
+			255
+		);
+
+		*healthColor = lerpColor;
+	}
+
+	extern __inline float DrawOutlinedText(ImFont* pFont, const ImVec2& pos, float size, ImU32 color, bool center, const char* text, ...)
+	{
+		va_list(args);
+		va_start(args, text);
+
+		CHAR wbuffer[256] = { };
+		vsprintf_s(wbuffer, text, args);
+
+		va_end(args);
+
+		auto DrawList = ImGui::GetForegroundDrawList();
+
+		std::stringstream stream(text);
+		std::string line;
+
+		float y = 0.0f;
+		int i = 0;
+
+		while (std::getline(stream, line))
+		{
+			ImVec2 textSize = pFont->CalcTextSizeA(size, FLT_MAX, 0.0f, wbuffer);
+
+			if (center)
+			{
+				DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
+				DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
+				DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
+				DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
+
+				DrawList->AddText(pFont, size, ImVec2(pos.x - textSize.x / 2.0f, pos.y + textSize.y * i), ImGui::GetColorU32(color), wbuffer);
+			}
+			else
+			{
+				DrawList->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
+				DrawList->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
+				DrawList->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
+				DrawList->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, 255)), wbuffer);
+
+				DrawList->AddText(pFont, size, ImVec2(pos.x, pos.y + textSize.y * i), ImGui::GetColorU32(color), wbuffer);
+			}
+
+			y = pos.y + textSize.y * (i + 1);
+			i++;
+		}
+		return y;
+	}
 }

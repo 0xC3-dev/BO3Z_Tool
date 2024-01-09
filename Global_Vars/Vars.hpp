@@ -1,7 +1,5 @@
 #pragma once
 #include "../Includes/Includes.hpp"
-#include "../Engine/Vectors/Vectors.hpp"
-#include <vector>
 
 namespace UI
 {
@@ -117,6 +115,15 @@ namespace FeatureSettings
 
 namespace AimSettings
 {
+	extern float fCurrentDist;
+	extern float fClosestDist;
+	extern float fCacheDist[24];
+	extern float fFov;
+	extern int iBestTarget;
+	extern int iCheckTarget;
+	extern vec2_t vScreen;
+	extern vec2_t vHead;
+	//
 	extern float fFovLimit;
 	extern float fAimSmooth;
 	extern int iAimKey;
@@ -261,6 +268,7 @@ namespace GameValues
 namespace Offsets
 {
 #pragma region Player Vars
+	extern DWORD viewMatrix;
 	extern uintptr_t playerBasePtr;
 	extern uintptr_t playerPedPtr;
 	extern uintptr_t playerNoRecoilPtr;

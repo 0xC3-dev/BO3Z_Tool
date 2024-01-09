@@ -1,5 +1,4 @@
-﻿#include "Engine.hpp"
-#include "../Overlay/Overlay.hpp"
+﻿#include "../Overlay/Overlay.hpp"
 
 namespace Engine
 {
@@ -14,7 +13,6 @@ namespace Engine
 			{
 				entity.GetPlayerAddr();
 				entity.GetPlayerValues();
-				entity.SetZombieAddr();
 				Game::bSetAddress = 2;
 			}
 			else if (Game::bSetAddress == 1)
@@ -34,7 +32,6 @@ namespace Engine
 			{
 				entity.GetPlayerAddr();
 				entity.GetPlayerValues();
-				entity.SetZombieAddr();
 				Game::bSetAddress = 1;
 			}
 			else if (Game::bSetAddress == 2)
@@ -49,11 +46,12 @@ namespace Engine
 			}
 		}
 	}
-	// Features for Player 1.
-	void Player1Features()
+	// Features for Player 1 - 4 ( also includes zombies features ).
+	void PlayerFeatures()
 	{
 		if (FeatureSettings::bIsInGame)
 		{
+#pragma region Player 1 Features.
 			if (FeatureSettings::bP1InfiniteHealth)
 			{
 				entity.SetGodMode(GameValues::iPlayer1Index, &FeatureSettings::bTrueState);
@@ -125,37 +123,16 @@ namespace Engine
 					entity.SetPlayerWeapon(GameValues::iPlayer1Index);
 				}
 			}
-		}
-		if (!FeatureSettings::bIsInGame)
-		{
-			if (FeatureSettings::bP1InfiniteHealth)
-			{
-				entity.SetGodMode(GameValues::iPlayer1Index, &FeatureSettings::bFalseState);
-			}
-			if (FeatureSettings::bNoRecoilOn)
-			{
-				entity.SetNoRecoil(&FeatureSettings::bFalseState);
-			}
-			/*if (FeatureSettings::bJetPack)
-			{
-				FeatureSettings::bJetPack = false;
-				entity.fGlobalJetPackValue = 0.f;
-				entity.fGlobalJetPackAddValue = 8.f;
-			}*/
-		}
-	}
-	// Features for Player 2.
-	void Player2Features()
-	{
-		if (FeatureSettings::bIsInGame)
-		{
+#pragma endregion
+
+#pragma region Player 2 Features.
 			if (FeatureSettings::bP2InfiniteHealth)
 			{
-				entity.SetGodMode(GameValues::iPlayer2Index,  &FeatureSettings::bTrueState);
+				entity.SetGodMode(GameValues::iPlayer2Index, &FeatureSettings::bTrueState);
 			}
 			if (!FeatureSettings::bP2InfiniteHealth)
 			{
-				entity.SetGodMode(GameValues::iPlayer2Index,  &FeatureSettings::bFalseState);
+				entity.SetGodMode(GameValues::iPlayer2Index, &FeatureSettings::bFalseState);
 			}
 			if (FeatureSettings::bP2InfiniteClipAmmo)
 			{
@@ -187,27 +164,16 @@ namespace Engine
 			{
 				entity.SetPlayerWeapon(GameValues::iPlayer2Index);
 			}
-		}
-		if (!FeatureSettings::bIsInGame)
-		{
-			if (FeatureSettings::bP2InfiniteHealth)
-			{
-				entity.SetGodMode(GameValues::iPlayer2Index,  &FeatureSettings::bFalseState);
-			}
-		}
-	}
-	// Features for Player 3.
-	void Player3Features()
-	{
-		if (FeatureSettings::bIsInGame)
-		{
+#pragma endregion
+
+#pragma region Player 3 Features.
 			if (FeatureSettings::bP3InfiniteHealth)
 			{
-				entity.SetGodMode(GameValues::iPlayer3Index,  &FeatureSettings::bTrueState);
+				entity.SetGodMode(GameValues::iPlayer3Index, &FeatureSettings::bTrueState);
 			}
 			if (!FeatureSettings::bP3InfiniteHealth)
 			{
-				entity.SetGodMode(GameValues::iPlayer3Index,  &FeatureSettings::bFalseState);
+				entity.SetGodMode(GameValues::iPlayer3Index, &FeatureSettings::bFalseState);
 			}
 			if (FeatureSettings::bP3InfiniteClipAmmo)
 			{
@@ -239,27 +205,16 @@ namespace Engine
 			{
 				entity.SetPlayerWeapon(GameValues::iPlayer3Index);
 			}
-		}
-		if (!FeatureSettings::bIsInGame)
-		{
-			if (FeatureSettings::bP3InfiniteHealth)
-			{
-				entity.SetGodMode(GameValues::iPlayer3Index,  &FeatureSettings::bFalseState);
-			}
-		}
-	}
-	// Features for Player 4.
-	void Player4Features()
-	{
-		if (FeatureSettings::bIsInGame)
-		{
+#pragma endregion
+
+#pragma region Player 4 Features.
 			if (FeatureSettings::bP4InfiniteHealth)
 			{
-				entity.SetGodMode(GameValues::iPlayer4Index,  &FeatureSettings::bTrueState);
+				entity.SetGodMode(GameValues::iPlayer4Index, &FeatureSettings::bTrueState);
 			}
 			if (!FeatureSettings::bP4InfiniteHealth)
 			{
-				entity.SetGodMode(GameValues::iPlayer4Index,  &FeatureSettings::bFalseState);
+				entity.SetGodMode(GameValues::iPlayer4Index, &FeatureSettings::bFalseState);
 			}
 			if (FeatureSettings::bP4InfiniteClipAmmo)
 			{
@@ -291,20 +246,9 @@ namespace Engine
 			{
 				entity.SetPlayerWeapon(GameValues::iPlayer4Index);
 			}
-		}
-		if (!FeatureSettings::bIsInGame)
-		{
-			if (FeatureSettings::bP4InfiniteHealth)
-			{
-				entity.SetGodMode(GameValues::iPlayer4Index,  &FeatureSettings::bFalseState);
-			}
-		}
-	}
-	// Features for Zombies.
-	void ExtraGoodieFeatures()
-	{
-		if (FeatureSettings::bIsInGame)
-		{
+#pragma endregion
+
+#pragma region Zombie Features.
 			if (FeatureSettings::bZombieTP)
 			{
 				entity.EnableZombieTP();
@@ -312,6 +256,40 @@ namespace Engine
 			if (FeatureSettings::bZombieCount)
 			{
 				entity.GetZombieCount();
+			}
+#pragma endregion
+		}
+		if (!FeatureSettings::bIsInGame)
+		{
+			// Player 1 Features.
+			if (FeatureSettings::bP1InfiniteHealth)
+			{
+				entity.SetGodMode(GameValues::iPlayer1Index, &FeatureSettings::bFalseState);
+			}
+			if (FeatureSettings::bNoRecoilOn)
+			{
+				entity.SetNoRecoil(&FeatureSettings::bFalseState);
+			}
+			/*if (FeatureSettings::bJetPack)
+			{
+				FeatureSettings::bJetPack = false;
+				entity.fGlobalJetPackValue = 0.f;
+				entity.fGlobalJetPackAddValue = 8.f;
+			}*/
+			// Player 2 Features.
+			if (FeatureSettings::bP2InfiniteHealth)
+			{
+				entity.SetGodMode(GameValues::iPlayer2Index, &FeatureSettings::bFalseState);
+			}
+			// Player 3 Features.
+			if (FeatureSettings::bP3InfiniteHealth)
+			{
+				entity.SetGodMode(GameValues::iPlayer3Index, &FeatureSettings::bFalseState);
+			}
+			// Player 4 Features.
+			if (FeatureSettings::bP4InfiniteHealth)
+			{
+				entity.SetGodMode(GameValues::iPlayer4Index, &FeatureSettings::bFalseState);
 			}
 		}
 	}
@@ -407,82 +385,97 @@ namespace Engine
 
 	namespace ESP
 	{
-		void DoESP()
+		// Check if outScreen positions are past the edge of the monitor.
+		__inline static bool OnScreenStrict(vec2_t V)
+		{
+			if (V.x > 0.01f && V.y > 0.01f && V.x < (float)UI::iScreenWidth && V.y < (float)UI::iScreenHeight)
+				return true;
+			return false;
+		}
+
+		// What does this function do?
+		extern __inline void DoESP()
 		{
 			if (FeatureSettings::bIsInGame)
 			{
 				for (int i = 0; i < 80; i++)
 				{
-					float iCurrentZHealth = entity.GetZombieHealth(i);
-					float iCurrentZMaxHealth = entity.GetZombieHealthMax(i);
+					int iCurrentZHealth = entity.GetZombieHealth(i);
+					int iCurrentZMaxHealth = entity.GetZombieHealthMax(i);
 
-					if ((int)iCurrentZHealth < 1 || (int)iCurrentZHealth == 0)
+					if (iCurrentZHealth < 1 || iCurrentZHealth == 0)
 						continue;
 
-					vec2_t vScreen = {0, 0};
+					vec2_t vScreen = { 0, 0 };
 					vec2_t vHead = { 0, 0 };
-					vec3_t zombiePos = entity.GetZombiePos(i);
-					vec3_t zombieHeadPos = entity.GetZombieHeadPos(i);
-					vec3_t playerPos = entity.GetPlayerPos();
-					vec3_t headPos = { 0, 0, 0 };
+					vec3_t vZombiePos = entity.GetZombiePos(i);
+					vec3_t vZombieHeadPos = entity.GetZombieHeadPos(i);
+					vec3_t vPlayerPos = entity.GetPlayerPos();
+					vec3_t vHeadPos = { 0, 0, 0 };
 
-					if (SDK::WorldToScreen(zombiePos, vScreen, UI::iScreenWidth, UI::iScreenHeight))
+					if (SDK::WorldToScreen(vZombiePos, vScreen, (float)UI::iScreenWidth, (float)UI::iScreenHeight))
 					{
-						headPos = entity.GetHeadPosition(zombieHeadPos);
-
-						if (SDK::WorldToScreen(headPos, vHead, UI::iScreenWidth, UI::iScreenHeight))
+						if (OnScreenStrict(vScreen))
 						{
-							vec2_t topLeft; vec2_t bottomRight;
-							entity.GetBox(vScreen, vHead, topLeft, bottomRight);
-							
-							float headHeight = vHead.y - vScreen.y;
-							float width = headHeight / 2;
-							float center = width;
+							vHeadPos = entity.GetHeadPosition(vZombieHeadPos);
 
-							if (VisualSettings::bZombieSnaplines)
+							if (SDK::WorldToScreen(vHeadPos, vHead, (float)UI::iScreenWidth, (float)UI::iScreenHeight))
 							{
-								if (VisualSettings::iZombieSnaplinePos == 1)
+								if (OnScreenStrict(vHead))
 								{
-									Render::Line(ImVec2(UI::iScreenWidth / 2, UI::iScreenHeight - UI::iScreenHeight), ImVec2(vScreen.x, vHead.y), VisualSettings::snaplineImColor, 1.f);
+									vec2_t topLeft = { 0, 0 }, bottomRight = { 0, 0 };
+									entity.GetBox(vScreen, vHead, topLeft, bottomRight);
+
+									float headHeight = vHead.y - vScreen.y;
+									float width = headHeight / 2;
+									float center = width;
+
+									if (VisualSettings::bZombieSnaplines)
+									{
+										if (VisualSettings::iZombieSnaplinePos == 1)
+										{
+											Render::Line(ImVec2((float)UI::iScreenWidth / 2, (float)UI::iScreenHeight - (float)UI::iScreenHeight), ImVec2(vScreen.x, vHead.y), VisualSettings::snaplineImColor, 1.f);
+										}
+										else if (VisualSettings::iZombieSnaplinePos == 2)
+										{
+											Render::Line(ImVec2((float)UI::iScreenWidth / 2, (float)UI::iScreenHeight / 2), ImVec2(vScreen.x, vHead.y), VisualSettings::snaplineImColor, 1.f);
+										}
+										else if (VisualSettings::iZombieSnaplinePos == 3)
+										{
+											Render::Line(ImVec2((float)UI::iScreenWidth / 2, (float)UI::iScreenHeight), ImVec2(vScreen.x, vHead.y), VisualSettings::snaplineImColor, 1.f);
+										}
+									}
+									if (VisualSettings::bZombie2DBrackets)
+									{
+										if (VisualSettings::bZombieHealthBar)
+										{
+											char buf[64];
+											sprintf_s(buf, "[%i]Health", iCurrentZHealth);
+											Render::CustomHealthColor((float)iCurrentZHealth, (float)iCurrentZMaxHealth, &VisualSettings::healthBarImColor);
+											Render::DrawBoxBrackets(ImGui::GetWindowDrawList(), topLeft.x - center, bottomRight.y, center, headHeight, VisualSettings::healthBarImColor, 1.f);
+											Render::DrawOutlinedText(ImGui::Body, ImVec2(vScreen.x, vHead.y - 20), 13.0f, VisualSettings::healthTextImColor, true, buf);
+										}
+										else
+										{
+											Render::DrawBoxBrackets(ImGui::GetWindowDrawList(), topLeft.x - center, bottomRight.y, center, headHeight, VisualSettings::bracketBoxImColor, 1.f);
+										}
+									}
+									if (VisualSettings::bZombieBoxFilled)
+									{
+										Render::RectFilled2(topLeft.x - center, bottomRight.y, center, headHeight, VisualSettings::boxFilledImColor);
+									}
+									if (VisualSettings::bZombie2DBox)
+									{
+										Render::DrawBox(VisualSettings::boxImColor, topLeft.x - center, bottomRight.y, center, headHeight);
+									}
+									if (VisualSettings::bZombieDistance)
+									{
+										float dist = SDK::UnitsToMeter(vPlayerPos.distance_to(vZombiePos));
+										char buf[64];
+										sprintf_s(buf, "[%.1f]m", dist);
+										Render::DrawOutlinedText(ImGui::Body, ImVec2(vScreen.x, vScreen.y + 10), 13.0f, VisualSettings::distanceImColor, true, buf);
+									}
 								}
-								else if (VisualSettings::iZombieSnaplinePos == 2)
-								{
-									Render::Line(ImVec2(UI::iScreenWidth / 2, UI::iScreenHeight / 2), ImVec2(vScreen.x, vHead.y), VisualSettings::snaplineImColor, 1.f);
-								}
-								else if (VisualSettings::iZombieSnaplinePos == 3)
-								{
-									Render::Line(ImVec2(UI::iScreenWidth / 2, UI::iScreenHeight), ImVec2(vScreen.x, vHead.y), VisualSettings::snaplineImColor, 1.f);
-								}
-							}
-							if (VisualSettings::bZombie2DBrackets)
-							{
-								if (VisualSettings::bZombieHealthBar)
-								{
-									char buf[64];
-									sprintf_s(buf, "[%i]Health", (int)iCurrentZHealth);
-									Render::CustomHealthColor(iCurrentZHealth, iCurrentZMaxHealth, &VisualSettings::healthBarImColor);
-									Render::DrawBoxBrackets(ImGui::GetWindowDrawList(), topLeft.x - center, bottomRight.y, center, headHeight, VisualSettings::healthBarImColor, 1.f);
-									Render::DrawOutlinedText(ImGui::Body, ImVec2(vScreen.x, vHead.y - 20), 13.0f, VisualSettings::healthTextImColor, true, buf);
-								}
-								else
-								{
-									Render::DrawBoxBrackets(ImGui::GetWindowDrawList(), topLeft.x - center, bottomRight.y, center, headHeight, VisualSettings::bracketBoxImColor, 1.f);
-								}
-							}
-							if (VisualSettings::bZombieBoxFilled)
-							{
-								Render::RectFilled2(topLeft.x - center, bottomRight.y, center, headHeight, VisualSettings::boxFilledImColor);
-							}
-							if (VisualSettings::bZombie2DBox)
-							{
-								Render::DrawBox(VisualSettings::boxImColor, topLeft.x - center, bottomRight.y, center, headHeight);
-							}
-							if (VisualSettings::bZombieDistance)
-							{
-								auto dist = SDK::UnitsToMeter(playerPos.distance_to(zombiePos));
-								char buf[64];
-								sprintf_s(buf, "[%.1f]m", dist);
-								Render::DrawOutlinedText(ImGui::Body, ImVec2(vScreen.x, vScreen.y + 10), 13.0f, VisualSettings::distanceImColor, true, buf);
 							}
 						}
 					}
@@ -491,15 +484,16 @@ namespace Engine
 		}
 
 		// Small Crosshair in the Center of the Screen.
-		constexpr long crosshairSize = 10.0f;
-		ImVec2 center = ImVec2(WND_SIZEX / 2, WND_SIZEY / 2);
+		constexpr long fCrosshairSize = (const long)10.0f;
+		ImVec2 vCenterScreenPos = ImVec2((float)WND_SIZEX / 2, (float)WND_SIZEY / 2); // ImVec2((float)UI::iScreenWidth / 2.f, (float)UI::iScreenHeight / 2.f);
 
-		void MiscFeatures()
+		// Misc Features go here.
+		extern __inline void MiscFeatures()
 		{
 			if (MiscSettings::bCrosshair)
 			{				
-				Render::Line(ImVec2((center.x), (center.y) - crosshairSize), ImVec2((center.x), (center.y) + crosshairSize), VisualSettings::crosshairImColor, 1.5f);
-				Render::Line(ImVec2((center.x) - crosshairSize, (center.y)), ImVec2((center.x) + crosshairSize, (center.y)), VisualSettings::crosshairImColor, 1.5f);
+				Render::Line(ImVec2((vCenterScreenPos.x), (vCenterScreenPos.y) - fCrosshairSize), ImVec2((vCenterScreenPos.x), (vCenterScreenPos.y) + fCrosshairSize), VisualSettings::crosshairImColor, 1.5f);
+				Render::Line(ImVec2((vCenterScreenPos.x) - fCrosshairSize, (vCenterScreenPos.y)), ImVec2((vCenterScreenPos.x) + fCrosshairSize, (vCenterScreenPos.y)), VisualSettings::crosshairImColor, 1.5f);
 			}
 			if (MiscSettings::bPlayerFov)
 			{
@@ -508,47 +502,33 @@ namespace Engine
 			if (FeatureSettings::bZombieCount)
 			{
 				// Draw Zombie Counter in Bottom Left Screen.
-				Render::EasyText(ImVec2(10, UI::iScreenHeight - 30), VisualSettings::zombieCounterImColor, "Zombie Count: ", 15.f);
-				Render::EasyNumber(ImVec2(100, UI::iScreenHeight - 30), VisualSettings::zombieCounterValueImColor, GameValues::iZombieCountValue, 15.f);
+				Render::EasyText(ImVec2(10, (float)UI::iScreenHeight - 30), VisualSettings::zombieCounterImColor, "Zombie Count: ", 15.f);
+				Render::EasyNumber(ImVec2(100, (float)UI::iScreenHeight - 30), VisualSettings::zombieCounterValueImColor, GameValues::iZombieCountValue, 15.f);
 			}
 		}
-
-		void FeatureLoop()
-		{
-			ESP::DoESP();
-			ESP::MiscFeatures();
-		}
 	}
-
-	namespace AimVarsLocal
-	{
-		float fCurrentDist = NULL;
-		float fClosestDist = FLT_MAX;
-		float fCacheDist[24] = { };
-		float fFov = NULL;
-		int iBestTarget = -1;
-		int iCheckTarget = NULL;
-		vec2_t vScreen = { 0, 0 };
-		vec2_t vHead = { 0, 0 };
-	};
 
 	namespace Aimbot
 	{
 		SDK::Entity_t entityAim;
 
-		inline float DistanceCursor(vec2_t vec)
+		__inline static float DistanceCursor(vec2_t vec)
 		{
 			POINT p;
 			if (GetCursorPos(&p))
 			{
 				float ydist = (vec.y - p.y);
 				float xdist = (vec.x - p.x);
-				float ret = sqrt(pow(ydist, 2) + pow(xdist, 2));
+				float ret = (float)sqrt(pow(ydist, 2) + pow(xdist, 2));
 				return ret;
+			}
+			else
+			{
+				return 0;
 			}
 		}
 
-		vec2_t Smooth(vec2_t pos)
+		__inline static vec2_t Smooth(vec2_t pos)
 		{
 			vec2_t center{ (float)(UI::iScreenWidth / 2), (float)(UI::iScreenHeight / 2) };
 			vec2_t target{ 0, 0 };
@@ -607,68 +587,63 @@ namespace Engine
 			return target;
 		}
 
-		void MouseAim(vec2_t target)
+		__inline static void MouseAim(vec2_t target)
 		{
 			INPUT input;
 			input.type = INPUT_MOUSE;
 			input.mi.mouseData = 0;
 			input.mi.time = 0;
-			input.mi.dx = target.x;
-			input.mi.dy = target.y;
+			input.mi.dx = (LONG)target.x;
+			input.mi.dy = (LONG)target.y;
 			input.mi.dwFlags = MOUSEEVENTF_MOVE;
 			SendInput(1, &input, sizeof(input));
 		}
 
-		int GetClosestTarget()
+		__inline static int GetClosestTarget()
 		{
 			for (int i = 0; i < 80; i++)
 			{
-				float iCurrentZHealth = entityAim.GetZombieHealth(i);
-				float iCurrentZMaxHealth = entityAim.GetZombieHealthMax(i);
+				int iCurrentZHealth = entityAim.GetZombieHealth(i);
 
-				if ((int)iCurrentZHealth < 1 || (int)iCurrentZHealth == 0)
+				if (iCurrentZHealth < 1 || iCurrentZHealth == 0)
 					continue;
 
+				vec3_t vZombiePos = entityAim.GetZombiePos(i);
+				vec3_t vZombieHeadPos = entityAim.GetZombieHeadPos(i);
+				vec3_t vPlayerPos = entityAim.GetPlayerPos();
+				vec3_t vHeadPos = { 0, 0, 0 };
 				vec2_t vScreen = { 0, 0 };
-				vec2_t vHead = { 0, 0 };
-				vec3_t zombiePos = entityAim.GetZombiePos(i);
-				vec3_t zombieHeadPos = entityAim.GetZombieHeadPos(i);
-				vec3_t playerPos = entityAim.GetPlayerPos();
-				vec3_t headPos = { 0, 0, 0 };
-
-				if (SDK::WorldToScreen(zombiePos, AimVarsLocal::vScreen, UI::iScreenWidth, UI::iScreenHeight))
+				vec2_t vScreenHead = { 0, 0 };
+				if (SDK::WorldToScreen(vZombiePos, vScreen, (float)UI::iScreenWidth, (float)UI::iScreenHeight))
 				{
-					headPos = entity.GetHeadPosition(zombieHeadPos);
+					AimSettings::fCurrentDist = SDK::UnitsToMeter(vPlayerPos.distance_to(vZombiePos));
 
-					if (SDK::WorldToScreen(headPos, AimVarsLocal::vHead, UI::iScreenWidth, UI::iScreenHeight))
+					vHeadPos = entity.GetHeadPosition(vZombieHeadPos);
+
+					if (SDK::WorldToScreen(vHeadPos, vScreenHead, (float)UI::iScreenWidth, (float)UI::iScreenHeight))
 					{
-						AimVarsLocal::fCurrentDist = SDK::UnitsToMeter(playerPos.distance_to(zombiePos));
+						float fov = DistanceCursor(vScreenHead);
 
-						if (AimVarsLocal::fCurrentDist < 200.f)
+						if (fov < MiscSettings::fPlayerFovSize)
 						{
-							AimVarsLocal::fFov = DistanceCursor(AimVarsLocal::vHead);
-
-							if (AimVarsLocal::fFov < MiscSettings::fPlayerFovSize)
+							if (AimSettings::fCurrentDist < AimSettings::fClosestDist)
 							{
-								if (AimVarsLocal::fCurrentDist < AimVarsLocal::fClosestDist)
-								{
-									AimVarsLocal::fClosestDist = AimVarsLocal::fCurrentDist;
-									AimVarsLocal::iBestTarget = i;
-								}
-								if (AimVarsLocal::fCurrentDist > AimVarsLocal::fCurrentDist)
-								{
-									continue;
-								}
+								AimSettings::fClosestDist = AimSettings::fCurrentDist;
+								AimSettings::iBestTarget = i;
+							}
+							if (AimSettings::fCurrentDist > AimSettings::fClosestDist)
+							{
+								continue;
 							}
 						}
 					}
 				}
 			}
-			AimVarsLocal::fClosestDist = FLT_MAX;
-			return AimVarsLocal::iBestTarget;
+			AimSettings::fClosestDist = FLT_MAX;
+			return AimSettings::iBestTarget;
 		}
 
-		void DoAimbot()
+		extern __inline void DoAimbot()
 		{
 			while (true)
 			{
@@ -676,49 +651,51 @@ namespace Engine
 				{
 					if (FeatureSettings::bIsInGame)
 					{
-						if (GetAsyncKeyState(VK_LMENU))
+						for (int i = 0; i < 80; i++)
 						{
-							if (GetClosestTarget() >= 0)
+							int iCurrentZHealth = entityAim.GetZombieHealth(i);
+
+							if (iCurrentZHealth < 1 || iCurrentZHealth == 0)
+								continue;
+
+							vec3_t vZombiePos = entityAim.GetZombiePos(i);
+							vec3_t vZombieHeadPos = entityAim.GetZombieHeadPos(i);
+							vec3_t vPlayerPos = entityAim.GetPlayerPos();
+							vec3_t vHeadPos = { 0, 0, 0 };
+
+							if (SDK::WorldToScreen(vZombiePos, AimSettings::vScreen, (float)UI::iScreenWidth, (float)UI::iScreenHeight))
 							{
-								AimVarsLocal::vHead = { AimVarsLocal::vHead.x, AimVarsLocal::vHead.y };
-								MouseAim(Smooth(AimVarsLocal::vHead));
-								//float iCurrentZHealth = entity.GetZombieHealth(i);
-								//float iCurrentZMaxHealth = entity.GetZombieHealthMax(i);
+								vHeadPos = entity.GetHeadPosition(vZombieHeadPos);
 
-								//if ((int)iCurrentZHealth < 1 || (int)iCurrentZHealth == 0)
-								//	return;
+								if (SDK::WorldToScreen(vHeadPos, AimSettings::vHead, (float)UI::iScreenWidth, (float)UI::iScreenHeight))
+								{
+									AimSettings::fCurrentDist = SDK::UnitsToMeter(vPlayerPos.distance_to(vZombiePos));
 
-								//vec2_t vScreen = { 0, 0 };
-								//vec2_t vHead = { 0, 0 };
-								//vec3_t zombiePos = entity.GetZombiePos(i);
-								//vec3_t zombieHeadPos = entity.GetZombieHeadPos(i);
-								//vec3_t playerPos = entity.GetPlayerPos();
-								//vec3_t headPos = { 0, 0, 0 };
+									if (AimSettings::fCurrentDist < 200.f)
+									{
+										AimSettings::fFov = DistanceCursor(AimSettings::vHead);
 
-								//if (SDK::WorldToScreen(zombiePos, AimVarsLocal::vScreen, UI::iScreenWidth, UI::iScreenHeight))
-								//{
-								//	if (SDK::WorldToScreen(zombieHeadPos, AimVarsLocal::vHead, UI::iScreenWidth, UI::iScreenHeight))
-								//	{
-								//		AimVarsLocal::fCurrentDist = SDK::UnitsToMeter(playerPos.distance_to(zombiePos));
-
-								//		if (AimVarsLocal::fCurrentDist < 200.f)
-								//		{
-								//			AimVarsLocal::fFov = DistanceCursor(AimVarsLocal::vHead);
-
-								//			if (AimVarsLocal::fFov < MiscSettings::playerFovSize)
-								//			{
-								//				std::cout << "4\n\n";
-								//				//AimVarsLocal::vHead.y = AimVarsLocal::vHead.y;
-								//				AimVarsLocal::vHead = { AimVarsLocal::vHead.x, AimVarsLocal::vHead.y };
-								//				MouseAim(Smooth(AimVarsLocal::vHead));
-								//			}
-								//		}
-								//	}
-								//}
+										if (AimSettings::fFov < MiscSettings::fPlayerFovSize)
+										{
+											if (AimSettings::fCurrentDist < AimSettings::fClosestDist)
+											{
+												AimSettings::fClosestDist = AimSettings::fCurrentDist;
+												if (GetAsyncKeyState(VK_LMENU))
+												{
+													MouseAim(Smooth(AimSettings::vHead));
+												}
+											}
+											if (AimSettings::fCurrentDist > AimSettings::fCurrentDist)
+											{
+												continue;
+											}
+										}
+									}
+								}
 							}
 						}
+						AimSettings::fClosestDist = FLT_MAX;
 					}
-					Sleep(2);
 				}
 			}
 		}

@@ -8,12 +8,12 @@ namespace Startup
 	std::string chars{ "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()`~-_=+[{]{|;:'\",<.>/?" };
 	std::random_device rd;
 	std::mt19937 generator(rd());
-	std::string RandStr(size_t length)
+	std::string RandStr(DWORD length)
 	{
-		const size_t char_size = chars.size();
+		const DWORD char_size = (DWORD)chars.size();
 		std::uniform_int_distribution<> random_int(0, char_size - 1);
 		std::string output;
-		for (size_t i = 0; i < length; ++i)
+		for (DWORD i = 0; i < length; ++i)
 			output.push_back(chars[random_int(generator)]);
 		return output;
 	}
@@ -22,7 +22,6 @@ namespace Startup
 	void SetConsoleAppInfo()
 	{
 		SetConsoleTitle(RandStr(12).c_str());
-		ShowWindow(GetConsoleWindow(), FALSE);
 	}
 
 	// Get Pid and Module Base.
@@ -43,16 +42,16 @@ namespace Startup
 		}
 	}
 
-	// Create our Separate Threads so ESP is as smooth as possible.
+	// Create our Separate Threads.
 	void CreateThreads()
 	{
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)Overlay::Loop, nullptr, 0, nullptr);
-		//CreateThread(0, 0, (LPTHREAD_START_ROUTINE)Engine::Aimbot::DoAimbot, nullptr, 0, nullptr);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)Overlay::Loop, 0 , 0, nullptr);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)Engine::Aimbot::DoAimbot, 0, 0, nullptr);
 	}
 
 	// Config System.
 	void ConfigSystem()
 	{
-		
+		// Need to add.
 	}
 }
