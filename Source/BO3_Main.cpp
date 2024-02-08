@@ -35,9 +35,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Startup::CreateThreads();
 	while (true)
 	{
-		Engine::IsInGame();
-		Engine::PlayerFeatures();
-		Engine::DisableAllFeatures();
+		//Engine::IsInGame();
+		//Engine::PlayerFeatures();
+		//Engine::DisableAllFeatures();
+		ConfigSystem::LoadAndSaveConfig();
+		if (GetAsyncKeyState(VK_HOME))
+		{
+			exit(0);
+		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 }

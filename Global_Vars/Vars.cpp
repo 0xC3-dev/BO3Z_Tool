@@ -181,6 +181,54 @@ namespace VisualSettings
 	ImColor zombieCounterValueImColor = ImColor(fZombieCounterValueColor[0], fZombieCounterValueColor[1], fZombieCounterValueColor[2]);
 }
 
+namespace ConfigSettings
+{
+	// Config Names.
+	const char* items[5] = { " Config 1", " Config 2", " Config 3", " Config 4", " Config 5" };
+	// Load & Save Bools.
+	bool bLoadConfig1 = false;
+	bool bLoadConfig2 = false;
+	bool bLoadConfig3 = false;
+	bool bLoadConfig4 = false;
+	bool bLoadConfig5 = false;
+	bool bLoadedConfig = false;
+	bool bLoadedConfig1 = false;
+	bool bLoadedConfig2 = false;
+	bool bLoadedConfig3 = false;
+	bool bLoadedConfig4 = false;
+	bool bLoadedConfig5 = false;
+	bool bLoadedConfigNotify1 = false;
+	bool bLoadedConfigNotify2 = false;
+	bool bLoadedConfigNotify3 = false;
+	bool bLoadedConfigNotify4 = false;
+	bool bLoadedConfigNotify5 = false;
+	bool bSaveConfig1 = false;
+	bool bSaveConfig2 = false;
+	bool bSaveConfig3 = false;
+	bool bSaveConfig4 = false;
+	bool bSaveConfig5 = false;
+	bool bSavedConfig1 = false;
+	bool bSavedConfig2 = false;
+	bool bSavedConfig3 = false;
+	bool bSavedConfig4 = false;
+	bool bSavedConfig5 = false;
+	bool bSavedConfigNotify1 = false;
+	bool bSavedConfigNotify2 = false;
+	bool bSavedConfigNotify3 = false;
+	bool bSavedConfigNotify4 = false;
+	bool bSavedConfigNotify5 = false;
+	int iTrackConfigLoaded = 1337;
+	//
+	ULONGLONG iElapsedTime = 0;
+	ULONGLONG iCreationTime = 0;
+	ULONGLONG iDissmisTime = 3000;
+	float fFadePercentage = 0.f;
+	int iNotifyX = 0;
+	int iNotifyY = 0;
+	bool bNotifyMssg = false;
+	std::string sNotifyMssg = "";
+}
+
 namespace GameValues
 {
 	// Player Feature Values

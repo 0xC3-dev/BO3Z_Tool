@@ -9,7 +9,7 @@
 #define HELPMARKERDISC(str) ImGui::SameLine(); ImGui::TextColored(ImColor(0, 130, 15, 255), "[ * ]"); if (ImGui::IsItemHovered()) ImGui::SetTooltip(str)
 #pragma warning(disable: 26812 26815)
 
-inline DWORD windowFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration; // ImGuiWindowFlags_NoSavedSettings
+inline DWORD windowFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoSavedSettings;
 
 namespace Overlay
 {

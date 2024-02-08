@@ -182,6 +182,54 @@ namespace VisualSettings
 	extern ImColor zombieCounterValueImColor;
 }
 
+namespace ConfigSettings
+{
+	// Config Names.
+	extern const char* items[5];
+	// Load & Save Bools.
+	extern bool bLoadConfig1;
+	extern bool bLoadConfig2;
+	extern bool bLoadConfig3;
+	extern bool bLoadConfig4;
+	extern bool bLoadConfig5;
+	extern bool bLoadedConfig;
+	extern bool bLoadedConfig1;
+	extern bool bLoadedConfig2;
+	extern bool bLoadedConfig3;
+	extern bool bLoadedConfig4;
+	extern bool bLoadedConfig5;
+	extern bool bLoadedConfigNotify1;
+	extern bool bLoadedConfigNotify2;
+	extern bool bLoadedConfigNotify3;
+	extern bool bLoadedConfigNotify4;
+	extern bool bLoadedConfigNotify5;
+	extern bool bSaveConfig1;
+	extern bool bSaveConfig2;
+	extern bool bSaveConfig3;
+	extern bool bSaveConfig4;
+	extern bool bSaveConfig5;
+	extern bool bSavedConfig1;
+	extern bool bSavedConfig2;
+	extern bool bSavedConfig3;
+	extern bool bSavedConfig4;
+	extern bool bSavedConfig5;
+	extern bool bSavedConfigNotify1;
+	extern bool bSavedConfigNotify2;
+	extern bool bSavedConfigNotify3;
+	extern bool bSavedConfigNotify4;
+	extern bool bSavedConfigNotify5;
+	extern int iTrackConfigLoaded;
+	//
+	extern ULONGLONG iElapsedTime;
+	extern ULONGLONG iCreationTime;
+	extern ULONGLONG iDissmisTime;
+	extern float fFadePercentage;
+	extern int iNotifyX;
+	extern int iNotifyY;
+	extern bool bNotifyMssg;
+	extern std::string sNotifyMssg;
+}
+
 namespace GameValues
 {
 	// Player Feature Values

@@ -5,7 +5,7 @@ inline MARGINS zero = { -1, -1, -1, -1 };
 inline DWORD dwLastFrameTime = 0;
 inline int iLastTick = 0;
 
-void LimitFPS(int targetfps)
+static void LimitFPS(int targetfps)
 {
     DWORD currentTime = timeGetTime();
     if ((int)(currentTime - dwLastFrameTime) < (1000 / targetfps))
@@ -15,7 +15,7 @@ void LimitFPS(int targetfps)
 	dwLastFrameTime = currentTime;
 }
 
-void ClickThough(bool click)
+static void ClickThough(bool click)
 {
     if (click)
     {
@@ -27,7 +27,7 @@ void ClickThough(bool click)
     }
 }
 
-void CalcScreenPos()
+static void CalcScreenPos()
 {
     UI::iGuiX = UI::iScreenWidth - 600;
     UI::iGuiY = UI::iScreenHeight - 500;
@@ -39,7 +39,7 @@ static IDXGISwapChain* g_pSwapChain = NULL;
 static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
 static ID3D11ShaderResourceView* renderLogo = nullptr;
 
-void CreateRenderTarget()
+static void CreateRenderTarget()
 {
     ID3D11Texture2D* pBackBuffer;
     g_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
@@ -47,12 +47,12 @@ void CreateRenderTarget()
     pBackBuffer->Release();
 }
 
-void CleanupRenderTarget()
+static void CleanupRenderTarget()
 {
     if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = NULL; }
 }
 
-HRESULT CreateDeviceD3D(HWND hWnd)
+static HRESULT CreateDeviceD3D(HWND hWnd)
 {
     // Setup swap chain
     DXGI_SWAP_CHAIN_DESC sd;
@@ -83,7 +83,7 @@ HRESULT CreateDeviceD3D(HWND hWnd)
     return S_OK;
 }
 
-void CleanupDeviceD3D()
+static void CleanupDeviceD3D()
 {
     CleanupRenderTarget();
     if (g_pSwapChain) { g_pSwapChain->Release(); g_pSwapChain = NULL; }
@@ -116,8 +116,6 @@ void Overlay::Loop()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.IniFilename = NULL;
-    //ImGui::SaveIniSettingsToDisk(io.IniFilename);
     static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
     ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
 
@@ -247,6 +245,9 @@ namespace ImGui
 	ImColor DarkGrey22 = ImColor(22, 22, 22, 255);
 	ImColor LightGrey26 = ImColor(26, 26, 26, 255);
 	ImColor White = ImColor(255, 255, 255, 255);
+	ImColor Red = ImColor(254, 94, 87, 255);
+	ImColor Green = ImColor(116, 170, 92, 255);
+	ImColor Yellow = ImColor(250, 188, 56, 255);
 	ImVec4 active = ImVec4(ImColor(255, 100, 15, 255));
 	ImVec4 inactive = ImVec4(ImColor(255, 100, 15, 75));
 
@@ -287,6 +288,27 @@ namespace ImGui
 		ImGui::Spacing();
 		ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (ImGui::CalcTextSize(text).x / 2));
 		ImGui::Text(text);
+		ImGui::Spacing();
+		if (separator)
+		{
+			ImGui::NewLine();
+			Line(lineId);
+		}
+		if (newLine)
+		{
+			ImGui::NewLine();
+		}
+	}
+
+	void CenterColorTextCustom(const char* nonColorText, const char* colorText, int lineId, ImColor color, BOOL separator, BOOL newLine)
+	{
+		ImGui::Spacing();
+		ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (ImGui::CalcTextSize(nonColorText).x / 2 + ImGui::CalcTextSize(colorText).x / 2));
+		ImGui::Text(nonColorText);
+		ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (ImGui::CalcTextSize(colorText).x / 2 - ImGui::CalcTextSize(nonColorText).x / 2));
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color));
+		ImGui::Text(colorText);
+		ImGui::PopStyleColor();
 		ImGui::Spacing();
 		if (separator)
 		{
@@ -727,6 +749,345 @@ namespace ImGui
 		return ImGui::GetContentRegionAvail().y;
 	}
 
+	void SetCreationTime()
+	{
+		ConfigSettings::iCreationTime = GetTickCount64();
+		//printf("Creation Time: %i\n\n", creationTime);
+	}
+
+	bool IsExpired()
+	{
+		if (ConfigSettings::sNotifyMssg.size() > 0)
+		{
+			ConfigSettings::iElapsedTime = GetTickCount64() - ConfigSettings::iCreationTime;
+			//printf("Elapsed Time: %i\n\n", elapsedTime);
+		}
+		if (ConfigSettings::iElapsedTime > ConfigSettings::iDissmisTime)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	void SetNotifyMessage(const char* text)
+	{
+		ConfigSettings::bNotifyMssg = true;
+		ImGui::SetCreationTime();
+		ConfigSettings::sNotifyMssg = text;
+	}
+
+	void ResetNotifyMessage()
+	{
+		if (ImGui::IsExpired())
+		{
+			ConfigSettings::sNotifyMssg.clear();
+			ConfigSettings::iElapsedTime = 0;
+			ConfigSettings::iCreationTime = 0;
+			ConfigSettings::bNotifyMssg = false;
+		}
+	}
+
+	void FadeNotifyMessage()
+	{
+		if (ConfigSettings::sNotifyMssg.size() > 0)
+		{
+			if (ConfigSettings::iElapsedTime < 1000)
+			{
+				ConfigSettings::fFadePercentage = (float)ConfigSettings::iElapsedTime / 1000.0f;
+				//printf("Fade In Percent: %f  ", fadePercentage);
+			}
+			else if (ConfigSettings::iElapsedTime > 2000)
+			{
+				ConfigSettings::fFadePercentage = 1.0f - ((float)(ConfigSettings::iElapsedTime - 2000) / 1000.0f);
+				//printf("Fade Out Percent: %f  ", fadePercentage);
+			}
+		}
+	}
+
+	void RenderNotifyMessage(const char* text)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, 1.f, 1.f, ConfigSettings::fFadePercentage));
+		ImGui::PushFont(Body2);
+		ImGui::CenterText(text, 0, FALSE, FALSE);
+		ImGui::PopFont();
+		ImGui::PopStyleColor();
+		ImGui::FadeNotifyMessage();
+		ImGui::ResetNotifyMessage();
+	}
+
+	void RenderNotifyWindow(ImVec2 pos, ImVec2 size)
+	{
+		ImGui::SCP(pos.x, pos.y);
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(1.f, 0.412f, 0.f, ConfigSettings::fFadePercentage));
+		if (ImGui::BeginChild("NotifyWindow", ImVec2(size.x, size.y), false, windowFlags))
+		{
+			ImGui::SCPY(7);
+			ImGui::RenderNotifyMessage(ConfigSettings::sNotifyMssg.c_str());
+		} ImGui::PopStyleColor(); ImGui::EndChild();
+	}
+
+	void SetupConfigIcon()
+	{
+		if (ConfigSettings::iTrackConfigLoaded == 1)
+		{
+			ImGui::SCP(345, 145);
+			ImGui::PushFont(FA);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(Green));
+			ImGui::Text(ICON_FA_CHECK_CIRCLE);
+			ImGui::PopStyleColor();
+			ImGui::PopFont();
+		}
+		if (ConfigSettings::iTrackConfigLoaded == 2)
+		{
+			ImGui::SCP(345, 225);
+			ImGui::PushFont(FA);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(Green));
+			ImGui::Text(ICON_FA_CHECK_CIRCLE);
+			ImGui::PopStyleColor();
+			ImGui::PopFont();
+		}
+		if (ConfigSettings::iTrackConfigLoaded == 3)
+		{
+			ImGui::SCP(345, 306);
+			ImGui::PushFont(FA);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(Green));
+			ImGui::Text(ICON_FA_CHECK_CIRCLE);
+			ImGui::PopStyleColor();
+			ImGui::PopFont();
+		}
+		if (ConfigSettings::iTrackConfigLoaded == 4)
+		{
+			ImGui::SCP(345, 387);
+			ImGui::PushFont(FA);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(Green));
+			ImGui::Text(ICON_FA_CHECK_CIRCLE);
+			ImGui::PopStyleColor();
+			ImGui::PopFont();
+		}
+		if (ConfigSettings::iTrackConfigLoaded == 5)
+		{
+			ImGui::SCP(345, 468);
+			ImGui::PushFont(FA);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(Green));
+			ImGui::Text(ICON_FA_CHECK_CIRCLE);
+			ImGui::PopStyleColor();
+			ImGui::PopFont();
+		}
+	}
+
+	void SetupDoubleButtonFeatures(const char* featureName1, const char* featureName2, bool* featureBool1, bool* featureBoolLoaded, bool* featureBool2, BOOL newLine)
+	{
+		ImGui::SCPX(100);
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(ImColor(0, 68, 170, 125)));
+		if (ImGui::Button(featureName1, ImVec2(115, 27)))
+		{
+			*featureBool1 = true;
+			*featureBoolLoaded = true;
+			if (ConfigSettings::iTrackConfigLoaded == 1)
+			{
+				if (ConfigSettings::bLoadedConfig2)
+				{
+					ConfigSettings::bLoadedConfig1 = false;
+				}
+				if (ConfigSettings::bLoadedConfig3)
+				{
+					ConfigSettings::bLoadedConfig1 = false;
+				}
+				if (ConfigSettings::bLoadedConfig4)
+				{
+					ConfigSettings::bLoadedConfig1 = false;
+				}
+				if (ConfigSettings::bLoadedConfig5)
+				{
+					ConfigSettings::bLoadedConfig1 = false;
+				}
+			}
+			if (ConfigSettings::iTrackConfigLoaded == 2)
+			{
+				if (ConfigSettings::bLoadedConfig1)
+				{
+					ConfigSettings::bLoadedConfig2 = false;
+				}
+				if (ConfigSettings::bLoadedConfig3)
+				{
+					ConfigSettings::bLoadedConfig2 = false;
+				}
+				if (ConfigSettings::bLoadedConfig4)
+				{
+					ConfigSettings::bLoadedConfig2 = false;
+				}
+				if (ConfigSettings::bLoadedConfig5)
+				{
+					ConfigSettings::bLoadedConfig2 = false;
+				}
+			}
+			if (ConfigSettings::iTrackConfigLoaded == 3)
+			{
+				if (ConfigSettings::bLoadedConfig1)
+				{
+					ConfigSettings::bLoadedConfig3 = false;
+				}
+				if (ConfigSettings::bLoadedConfig2)
+				{
+					ConfigSettings::bLoadedConfig3 = false;
+				}
+				if (ConfigSettings::bLoadedConfig4)
+				{
+					ConfigSettings::bLoadedConfig3 = false;
+				}
+				if (ConfigSettings::bLoadedConfig5)
+				{
+					ConfigSettings::bLoadedConfig3 = false;
+				}
+			}
+			if (ConfigSettings::iTrackConfigLoaded == 4)
+			{
+				if (ConfigSettings::bLoadedConfig1)
+				{
+					ConfigSettings::bLoadedConfig4 = false;
+				}
+				if (ConfigSettings::bLoadedConfig2)
+				{
+					ConfigSettings::bLoadedConfig4 = false;
+				}
+				if (ConfigSettings::bLoadedConfig3)
+				{
+					ConfigSettings::bLoadedConfig4 = false;
+				}
+				if (ConfigSettings::bLoadedConfig5)
+				{
+					ConfigSettings::bLoadedConfig4 = false;
+				}
+			}
+			if (ConfigSettings::iTrackConfigLoaded == 5)
+			{
+				if (ConfigSettings::bLoadedConfig1)
+				{
+					ConfigSettings::bLoadedConfig5 = false;
+				}
+				if (ConfigSettings::bLoadedConfig2)
+				{
+					ConfigSettings::bLoadedConfig5 = false;
+				}
+				if (ConfigSettings::bLoadedConfig3)
+				{
+					ConfigSettings::bLoadedConfig5 = false;
+				}
+				if (ConfigSettings::bLoadedConfig4)
+				{
+					ConfigSettings::bLoadedConfig5 = false;
+				}
+			}
+		}
+		ImGui::SameLine();
+		ImGui::SCPX(220);
+		if (ImGui::Button(featureName2, ImVec2(115, 27)))
+		{
+			*featureBool2 = true;
+		}
+		ImGui::PopStyleColor();
+		if (*featureBoolLoaded)
+		{
+			if (ConfigSettings::bLoadedConfig1)
+			{
+				ConfigSettings::iTrackConfigLoaded = 1;
+			}
+			if (ConfigSettings::bLoadedConfig2)
+			{
+				ConfigSettings::iTrackConfigLoaded = 2;
+			}
+			if (ConfigSettings::bLoadedConfig3)
+			{
+				ConfigSettings::iTrackConfigLoaded = 3;
+			}
+			if (ConfigSettings::bLoadedConfig4)
+			{
+				ConfigSettings::iTrackConfigLoaded = 4;
+			}
+			if (ConfigSettings::bLoadedConfig5)
+			{
+				ConfigSettings::iTrackConfigLoaded = 5;
+			}
+		}
+		if (newLine)
+		{
+			ImGui::NewLine();
+		}
+	}
+
+	void SetupLoadedConfigText()
+	{
+		if (!ConfigSettings::bLoadedConfig1 && !ConfigSettings::bLoadedConfig2 && !ConfigSettings::bLoadedConfig3 && !ConfigSettings::bLoadedConfig4 && !ConfigSettings::bLoadedConfig5)
+		{
+			ConfigSettings::iTrackConfigLoaded = 0;
+			ImGui::CenterColorTextCustom("Loaded Config : ", "No Config Loaded", 0, Red, FALSE, TRUE);
+		}
+		if (ConfigSettings::iTrackConfigLoaded == 1)
+		{
+			ImGui::CenterColorTextCustom("Loaded Config : ", "Config 1 Loaded", 0, Green, FALSE, TRUE);
+		}
+		if (ConfigSettings::iTrackConfigLoaded == 2)
+		{
+			ImGui::CenterColorTextCustom("Loaded Config : ", "Config 2 Loaded", 0, Green, FALSE, TRUE);
+		}
+		if (ConfigSettings::iTrackConfigLoaded == 3)
+		{
+			ImGui::CenterColorTextCustom("Loaded Config : ", "Config 3 Loaded", 0, Green, FALSE, TRUE);
+		}
+		if (ConfigSettings::iTrackConfigLoaded == 4)
+		{
+			ImGui::CenterColorTextCustom("Loaded Config : ", "Config 4 Loaded", 0, Green, FALSE, TRUE);
+		}
+		if (ConfigSettings::iTrackConfigLoaded == 5)
+		{
+			ImGui::CenterColorTextCustom("Loaded Config : ", "Config 5 Loaded", 0, Green, FALSE, TRUE);
+		}
+		if (ConfigSettings::bSavedConfig1)
+		{
+			ImGui::SetNotifyMessage("- Config 1 Saved -");
+			ConfigSettings::bSavedConfig1 = false;
+		}
+		if (ConfigSettings::bSavedConfig2)
+		{
+			ImGui::SetNotifyMessage("- Config 2 Saved -");
+			ConfigSettings::bSavedConfig2 = false;
+		}
+		if (ConfigSettings::bSavedConfig3)
+		{
+			ImGui::SetNotifyMessage("- Config 3 Saved -");
+			ConfigSettings::bSavedConfig3 = false;
+		}
+		if (ConfigSettings::bSavedConfig4)
+		{
+			ImGui::SetNotifyMessage("- Config 4 Saved -");
+			ConfigSettings::bSavedConfig4 = false;
+		}
+		if (ConfigSettings::bSavedConfig5)
+		{
+			ImGui::SetNotifyMessage("- Config 5 Saved -");
+			ConfigSettings::bSavedConfig5 = false;
+		}
+	}
+
+	void SetupConfigSaveSettings()
+	{
+		ImGui::SetupLoadedConfigText();
+		ImGui::CenterText("Configuration 1", 0, FALSE, TRUE);
+		ImGui::SetupDoubleButtonFeatures("Load Config 1", "Save Config 1", &ConfigSettings::bLoadConfig1, &ConfigSettings::bLoadedConfig1, &ConfigSettings::bSaveConfig1, TRUE);
+		ImGui::CenterText("Configuration 2", 0, FALSE, TRUE);
+		ImGui::SetupDoubleButtonFeatures("Load Config 2", "Save Config 2", &ConfigSettings::bLoadConfig2, &ConfigSettings::bLoadedConfig2, &ConfigSettings::bSaveConfig2, TRUE);
+		ImGui::CenterText("Configuration 3", 0, FALSE, TRUE);
+		ImGui::SetupDoubleButtonFeatures("Load Config 3", "Save Config 3", &ConfigSettings::bLoadConfig3, &ConfigSettings::bLoadedConfig3, &ConfigSettings::bSaveConfig3, TRUE);
+		ImGui::CenterText("Configuration 4", 0, FALSE, TRUE);
+		ImGui::SetupDoubleButtonFeatures("Load Config 4", "Save Config 4", &ConfigSettings::bLoadConfig4, &ConfigSettings::bLoadedConfig4, &ConfigSettings::bSaveConfig4, TRUE);
+		//ImGui::CenterText("Configuration 5", 0, FALSE, TRUE);
+		//ImGui::SetupDoubleButtonFeatures("Load Config 5", "Save Config 5", &ConfigSettings::bLoadConfig5, &ConfigSettings::bLoadedConfig5, &ConfigSettings::bSaveConfig5, TRUE);
+		ImGui::SetupConfigIcon();
+	}
+
 	void SetGUITheme()
 	{
 		ImGui::SetColorEditOptions(ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_PickerHueWheel);
@@ -1040,12 +1401,14 @@ namespace ImGui
 					ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10);
 					if (ImGui::BeginChild("ConfigSystemWindow", ImVec2(434, ImGui::GetY() - 10), false, windowFlags))
 					{
+						// Render Notify Window.
+						if (ConfigSettings::bNotifyMssg)
+						{
+							ImGui::RenderNotifyWindow(ImVec2(276, 8), ImVec2(150, 30));
+						}
 						ImGui::SCPY(10);
 						ImGui::CenterText("Config System", 10, TRUE, TRUE);
-						ImGui::SCPY(ImGui::GetY() / 2 - 50);
-						ImGui::CenterText("COMING SOON!", 0, FALSE, FALSE);
-						ImGui::SCPY(ImGui::GetY() / 2 + 50);
-						ImGui::CenterText("PLEASE BE PATIENT", 0, FALSE, FALSE);
+						ImGui::SetupConfigSaveSettings();
 					} ImGui::PopStyleColor(); ImGui::PopStyleVar(); ImGui::EndChild();
 				}
 			} ImGui::PopStyleColor(); ImGui::EndChild();
