@@ -17,6 +17,8 @@
 * 
 *   Update : 11/26/23 | Some small adjustments.
 * 
+*	Update : 02/08/24 | Added base Config System. Still need to add the rest of the features to be exported and imported from the config system.
+* 
 * 
 *	TODO:
 * 
@@ -35,14 +37,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Startup::CreateThreads();
 	while (true)
 	{
-		//Engine::IsInGame();
-		//Engine::PlayerFeatures();
-		//Engine::DisableAllFeatures();
+		Engine::IsInGame();
+		Engine::PlayerFeatures();
+		Engine::DisableAllFeatures();
 		ConfigSystem::LoadAndSaveConfig();
-		if (GetAsyncKeyState(VK_HOME))
-		{
-			exit(0);
-		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 }
