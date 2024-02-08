@@ -16,6 +16,7 @@ Call of Duty: Black Ops 3 Zombie Tool
 ## Credits
 * Dear ImGui Framework - ocornut / https://github.com/ocornut/imgui
 * DirectX 11 Framework - Microsoft / https://www.microsoft.com/en-us/download/details.aspx?id=6812
+* Json Framework - nlohmann / https://github.com/nlohmann/json
 
 ## Features
 * GodMode ( All Players )
@@ -42,7 +43,7 @@ Call of Duty: Black Ops 3 Zombie Tool
 * Aimbot: Refine Aimbot and add Skeleton/Bone Selection.
 * ESP: Add Skeleton ESP.
 * Exploits: Fix JetPack feature. Fix No Spread.
-* Config System: Add Config System to Load/Save feature states.
+* Config System: Add the rest of the features to the config system.
 
 ## NOTE
 * This tool will have bugs present. I will do my best to squash as many as possible. If you wish to improve upon the codebase, feel free to make pull requests. Meaningful contributions are always welcome!
@@ -51,6 +52,7 @@ Call of Duty: Black Ops 3 Zombie Tool
 ![BO3Z_Tool1](https://cdn.discordapp.com/attachments/952164775771652106/1128441015896915998/image.png)
 ![BO3Z_Tool2](https://cdn.discordapp.com/attachments/952164775771652106/1129155050703442011/image.png)
 ![BO3Z_Tool3](https://cdn.discordapp.com/attachments/952164775771652106/1129155833968734429/image.png)
+![BO3Z_Tool4](https://cdn.discordapp.com/attachments/952094399578386432/1205248167394943016/image.png?ex=65d7add3&is=65c538d3&hm=9a389b7259db889f2b17aee9a222213ad82a809de212a2b3f25a0871ccec1b53&)
 
 ## InGame Preview
-![BO3Z_Tool4](https://cdn.discordapp.com/attachments/952344650306445352/1128350303478104194/image.png)
+![BO3Z_Tool5](https://cdn.discordapp.com/attachments/952344650306445352/1128350303478104194/image.png)

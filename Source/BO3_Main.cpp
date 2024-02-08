@@ -25,7 +25,7 @@
 *	Aimbot: Refine Aimbot and add Skeleton/Bone Selection.
 *	ESP: Add Skeleton ESP.
 *	Exploits: Fix JetPack feature. Fix No Spread.
-*	Config System: Add Config System to Load/Save feature states.
+*	Config System: Add the rest of the features to the config system.
 */
 
 #include "BO3_Main.hpp"
